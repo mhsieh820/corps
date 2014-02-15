@@ -32,18 +32,21 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index());
 app.get('/client', routes.client());
+app.post('/email', routes.email(sendgrid));
+	
 
 var count = 0;
 
+var gameEngine = 0;
 io.sockets.on('connection', function (socket) {
-  
+  	
   	game = new Game(socket);
   	//connect game
-  	socket.emit('ready','Ready!');
+  	//socket.emit('ready','Ready!');
   	socket.on('gameEngine', function(data){
     	gameEngine = socket.id;
     	console.log(gameEngine);
-    	io.sockets.socket(gameEngine).emit('register','REGISTER?');
+    	io.sockets.socket(gameEngine).emit('register', { register: 'yes' });
     });
 
   	
@@ -52,9 +55,12 @@ io.sockets.on('connection', function (socket) {
   	//New Email Recieved
   	socket.on('newEmail',function (data) {
   		console.log('email received'+data.email+data.msg+data.choice);
-  		var player=game.updatePlayer(data,count);
-  		game.sendPlayer(player,data.message);
-
+  		
+  		var player = game.updatePlayer(data);
+	  		
+	  	game.sendPlayer(player, data.message);
+  		
+	  	game.sendScore();
     });
     
      //SOCKETS THAT COME IN FROM EMAIL
@@ -74,40 +80,46 @@ io.sockets.on('connection', function (socket) {
 		this.scoreA = {r:"0",p:"0",s:"0"};
 		this.scoreB = {r:"0",p:"0",s:"0"};
 		this.socket = socket;
-		this.count=0;
-
+		
 	}
 
-	Game.prototype.updatePlayer = function(data,count) {
-		var hash=md5.md5(data.email);
+	Game.prototype.updatePlayer = function(data) {
+		var hash = md5.md5(data.email);
 		console.log('hash'+hash);
 		//if player exists, update score and send player to client
 		for(var i=0;i< this.players.length;i++){
+			console.log(this.players[i].uid);
 			if( hash == this.players[i].uid){
-				console.log('plaey at position'+i);
-				var oldChoice= this.players[i].choice;
-				var newChoice= this.players[i].updateChoice(data.choice);
-				if(newChoice!=null){
-					game.updateScore(oldChoice, newChoice, this.players[i].team);
+				console.log('play at position'+i);
+				var oldChoice = this.players[i].choice;
+				console.log(oldChoice);
+				var newChoice = this.players[i].updateChoice(data.choice);
+				if(newChoice != null){
+					this.updateScore(oldChoice, newChoice, this.players[i].team);
 				}
 				else{
-					this.players[i].choice=oldChoice;
+					this.players[i].choice = oldChoice;
 				}
-				break;
-				}
+					break;
+			}
 		}
-		//if player doesn't exist, create new player	
-				if(i==this.players.length){
-					console.log('Creating new player');
-					this.players[i]= new Player(this.hash, data.email,data.choice,++count);
-					this.updateScore('null', this.players[i].choice,this.players[i].team);
-				}
 
+		//if player doesn't exist, create new player	
+		if(i == this.players.length){
+			console.log('Creating new player');
+			count++;
+			this.players[i] = new Player(hash, data.email,data.choice);
+			this.players[i].setTeam();
+			this.players[i].updateChoice(this.players[i].choice);
+			this.updateScore('null',this.players[i].choice ,this.players[i].team);
+		}
+
+		return this.players[i];
 	}
 	
 
 	Game.prototype.updateScore = function(oldChoice,newChoice,team) {
-		if(team==1){
+		if(team == 1){
 			score = this.scoreA;
 		}
 		else{
@@ -115,6 +127,7 @@ io.sockets.on('connection', function (socket) {
 		}
 		
 		//need get old choice
+		
 		switch (oldChoice){
 			case 'r': score.r--;
 						break;
@@ -124,6 +137,7 @@ io.sockets.on('connection', function (socket) {
 						break;
 			default: break;
 		}
+		
 		switch (newChoice){
 			case 'r': score.r++;
 						break;
@@ -133,31 +147,63 @@ io.sockets.on('connection', function (socket) {
 						break;
 			default: break;
 		}
-		console.log('score r:'+score.r+ 'p: '+score.p+'s: '+score.s);
-		
+
 	}
 	
 
 	Game.prototype.startGame = function () {
 		
 		//send to client to start the game
-		io.sockets.socket(gameEngine).emit('gameTime', '1');
+		io.sockets.socket(gameEngine).emit('gameTime', {gameTime: '1'});
 		//start countdonw
 		
 		this.countDown(20, function () {
-			io.sockets.socket(gameEngine).emit('gameTime', '-1');
+			io.sockets.socket(gameEngine).emit('gameTime', {gameTime: '-1'});
 		});
 		//end game
 	};
 	
 	
 	//score is sent when the top choice changes
-	Game.prototype.sendScore = function (team) {
+	Game.prototype.sendScore = function () {
+		var scoreA = this.scoreA;
+		var scoreB = this.scoreB;
+		//test scores if any of the scores > %33
+		var teamA = 'p';
+		//find max
+		if ((scoreA.r > scoreA.p) && (scoreA.r > scoreA.s))
+		{
+			teamA = 'r';
+		}
+		else if ((scoreA.s > scoreA.r) && (scoreA.s > scoreA.p))
+		{
+			teamA = 's';
+		}
+
+		var teamB = 'p';
+		//find max
+		if ((scoreB.r >= scoreB.p) && (scoreB.r >= scoreB.s))
+		{
+			teamB = 'r';
+		}
+		else if ((scoreB.s >= scoreB.r) && (scoreB.s >= scoreB.p))
+		{
+			teamB = 's';
+		}
+		
+		
+		
+		if (count > 3)
+		{
+			
+			//team = 0,1 choice = r,p,s
+			var response = { teamA: team, teamB: teamB };
+			io.sockets.socket(gameEngine).emit('updateScore', {response: response});
+			
+		}
 	
 	
-		//team = 0,1 choice = r,p,s
-		var response = { team: team, choice: choice };
-		io.sockets.socket(gameEngine).emit('updateScore', response);
+		
 	};
 	
 	
@@ -177,7 +223,7 @@ io.sockets.on('connection', function (socket) {
 		var response = { uid: player.uid, timestamp: timestamp, message: message, team: player.team };
 		
 			
-		io.sockets.socket(gameEngine).emit('sendGame',response);
+		io.sockets.socket(gameEngine).emit('sendPlayer', {response: response});
 	
 	};
 	
@@ -202,14 +248,14 @@ io.sockets.on('connection', function (socket) {
     };
 			
 	
-//utility for timer	
+	//utility for timer	
 	
 	
 	
-	function Player(hash,email,choice,count) {
+	function Player(hash, email, choice) {
 		this.email = email;
 		this.choice = choice;
-		this.team = this.setTeam(count);
+		this.team = "";
 		this.uid = hash;
 	};
 	
@@ -224,19 +270,21 @@ io.sockets.on('connection', function (socket) {
 	Player.prototype.updateChoice = function(choice) {
 		
 		//take input and normalize
-		var string = trim(choice).charAt(0).toLowerCase();;
+		var string = choice.trim().charAt(0).toLowerCase();;
 		if (string == 'r' || string == 'p' || string == 's')
 		{
 			this.choice = string;
 		}
-		console.log('New Choice:'+string);
+		//console.log('New Choice:'+string);
+		return this.choice;
 	};
 	
 	
-	Player.prototype.setTeam = function (count) {
+	Player.prototype.setTeam = function () {
 		
 		//choose team A or B
-		if (count % 2 == 0)
+		
+		if ((count % 2) == 0)
 		{
 			this.team = 0; //TEAM A
 		}

@@ -9,3 +9,15 @@ exports.client = function () {
 		res.render('client');	
 	}
 };
+
+exports.email = function (sendgrid) {
+	
+	return function(req, res) {
+		//get req variable
+		
+		
+		//send mail using sendgrid node code
+			
+	}
+	
+};
