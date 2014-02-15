@@ -210,12 +210,7 @@ io.sockets.on('connection', function (socket) {
 		this.email = email;
 		this.choice = choice;
 		this.team = this.setTeam(count);
-<<<<<<< HEAD
-		this.uid = this.hashEmail(email);
-	
-=======
 		this.uid = hash;
->>>>>>> 4e5f339c06be1c91b826ebc4401b80b76ac144d5
 	};
 	
 	
