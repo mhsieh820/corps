@@ -7,6 +7,7 @@ var path = require('path');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
+var md5 = require("./md5.min.js");
 //var game = require("./gamecenter.js");
 io.set("log level", 1);
 server.listen(process.env.PORT || 5000);
@@ -107,34 +108,41 @@ io.sockets.on('connection', function (socket) {
 			
 		
 		
-	}
+	};
 	
 	
-	function Player() {
+	function Player(email, count) {
 		
-		this.email = "";
+		this.email = email;
 		this.choice = "";
-		this.team = "";
-		this.uid = "";
-		
-	}
+		this.team = this.setTeam(count);
+		this.uid = this.hashEmail(email);
+	};
 	
 	Player.prototype.hashEmail = function(email) {
 		
 		//hash the email MD5 to uid
+		this.uid = md5.md5(email);
 		
-	}
+	};
 	
-	Player.prototype.updateChoice = 		function(choice) {
+	Player.prototype.updateChoice = function(choice) {
 		this.choice = choice;
-	}
+	};
 	
 	
 	Player.prototype.setTeam = function (count) {
 		
 		//choose team A or B
-		
-	}
+		if (count % 2 == 0)
+		{
+			this.team = 0;
+		}
+		else
+		{
+			this.team = 1;
+		}
+	};
 	
 	
 	
