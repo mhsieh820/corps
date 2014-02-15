@@ -93,11 +93,15 @@
 				this.img = new Image();
 				this.width = 40;
 				this.height = 40;
+				var randomX = -1;
 				if (team <= 0) {
 					this.shield = blueTeamShield;
+					randomX = Math.random() * (canvas_width/2 - this.width) + canvas_width/2;
 				} else {
 					this.shield = redTeamShield;
+					randomX = Math.random() * (canvas_width/2-this.width);
 				}
+				this.x = randomX;
 				// this.shield.xoffset = this.width/2;
 				// this.shield.yoffset = this.height/2;
 
@@ -108,7 +112,6 @@
 			    this.img.src = 'http://www.gravatar.com/avatar/' + id;
 
 				this.team = team;
-				this.x = Math.random() * (canvas_width - this.width);
 				this.y = Math.random() * (canvas_height - this.height);
 				// newPlayer.shield = this.getShield();
 			};
