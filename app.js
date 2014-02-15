@@ -6,6 +6,7 @@ var path = require('path');
 
 var app = express();
 var server = require('http').createServer(app);
+
 var io = require('socket.io').listen(server);
 var md5 = require("./md5.min.js");
 //var game = require("./gamecenter.js");

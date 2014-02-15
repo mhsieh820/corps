@@ -7,7 +7,7 @@
 // 	});
 // }
 
-var socket = io.connect('www.corpsgame.com:3000');
+var socket = io.connect('http://www.corpsgame.com:3000');
 window.onload = function(){
 
 $('#join').click(function(){
