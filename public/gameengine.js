@@ -12,9 +12,6 @@ window.onload = function() {
     socket.on('emailReceived', function (data){
     	console.log('email recieved');
     	alert(data);
-    });
-
-    
-    
+    });    
 }
  

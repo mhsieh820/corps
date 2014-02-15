@@ -51,7 +51,7 @@ io.sockets.on('connection', function (socket) {
   
   	//New Email Recieved
   	socket.on('newEmail',function (data) {
-
+  		console.log('email received'+data.email+data.msg+data.choice);
   		var player=game.updatePlayer(data,count);
   		game.sendPlayer(player,data.message);
 
@@ -80,9 +80,11 @@ io.sockets.on('connection', function (socket) {
 
 	Game.prototype.updatePlayer = function(data,count) {
 		var hash=md5.md5(data.email);
+		console.log('hash'+hash);
 		//if player exists, update score and send player to client
-		for(var i=0;i< this.players.length();i++){
+		for(var i=0;i< this.players.length;i++){
 			if( hash == this.players[i].uid){
+				console.log('plaey at position'+i);
 				var oldChoice= this.players[i].choice;
 				var newChoice= this.players[i].updateChoice(data.choice);
 				if(newChoice!=null){
@@ -95,9 +97,10 @@ io.sockets.on('connection', function (socket) {
 				}
 		}
 		//if player doesn't exist, create new player	
-				if(i==players.length()){
+				if(i==this.players.length){
+					console.log('Creating new player');
 					this.players[i]= new Player(this.hash, data.email,data.choice,++count);
-					this.updateScore('null', this.players[i].choice,players[i].team);
+					this.updateScore('null', this.players[i].choice,this.players[i].team);
 				}
 
 	}
@@ -130,6 +133,7 @@ io.sockets.on('connection', function (socket) {
 						break;
 			default: break;
 		}
+		console.log('score r:'+score.r+ 'p: '+score.p+'s: '+score.s);
 		
 	}
 	
@@ -202,12 +206,11 @@ io.sockets.on('connection', function (socket) {
 	
 	
 	
-	function Player(email) {
-		
+	function Player(hash,email,choice,count) {
 		this.email = email;
-		this.choice = "";
+		this.choice = choice;
 		this.team = this.setTeam(count);
-		this.uid = this.hashEmail(email);
+		this.uid = hash;
 	};
 	
 	
@@ -219,14 +222,14 @@ io.sockets.on('connection', function (socket) {
 	};
 	
 	Player.prototype.updateChoice = function(choice) {
-	
+		
 		//take input and normalize
 		var string = trim(choice).charAt(0).toLowerCase();;
 		if (string == 'r' || string == 'p' || string == 's')
 		{
 			this.choice = string;
 		}
-		
+		console.log('New Choice:'+string);
 	};
 	
 	
@@ -241,6 +244,7 @@ io.sockets.on('connection', function (socket) {
 		{
 			this.team = 1; //TEAM B
 		}
+		console.log('player assigned team:'+this.team);
 	};
 	
 	
