@@ -34,7 +34,7 @@ app.get('/', routes.index());
 app.get('/client', routes.client());
 
 var count = 0;
-var score = {r="0",p="0",s="0"};
+
 io.sockets.on('connection', function (socket) {
   
   	game = new Game(socket);
@@ -81,23 +81,23 @@ io.sockets.on('connection', function (socket) {
 	Game.prototype.updatePlayer = function(data,count) {
 		var hash=md5.md5(data.email);
 		//if player exists, update score and send player to client
-		for(var i=0;i<players.length();i++){
-			if(hash==players[i].uid){
-				var oldChoice=players[i].choice;
-				var newChoice=players[i].updateChoice(data.choice);
+		for(var i=0;i< this.players.length();i++){
+			if( hash == this.players[i].uid){
+				var oldChoice= this.players[i].choice;
+				var newChoice= this.players[i].updateChoice(data.choice);
 				if(newChoice!=null){
-					game.updateScore(oldChoice,newChoice,players[i].team);
+					game.updateScore(oldChoice, newChoice, this.players[i].team);
 				}
 				else{
-					players[i].choice=oldChoice;
+					this.players[i].choice=oldChoice;
 				}
 				break;
 				}
 		}
 		//if player doesn't exist, create new player	
 				if(i==players.length()){
-					players[i]= new Player(this.hash, data.email,data.choice,++count);
-					game.updateScore('null',players[i].choice,players[i].team);
+					this.players[i]= new Player(this.hash, data.email,data.choice,++count);
+					this.updateScore('null', this.players[i].choice,players[i].team);
 				}
 
 	}
@@ -105,10 +105,10 @@ io.sockets.on('connection', function (socket) {
 
 	Game.prototype.updateScore = function(oldChoice,newChoice,team) {
 		if(team==1){
-			score=scoreA;
+			score = this.scoreA;
 		}
 		else{
-			score=scoreB;
+			score = this.scoreB;
 		}
 		
 		//need get old choice
@@ -195,10 +195,8 @@ io.sockets.on('connection', function (socket) {
                 }
             }
 
-        },
-		
-	};
-	
+    };
+			
 	
 //utility for timer	
 	
