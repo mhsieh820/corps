@@ -10,6 +10,7 @@
 			var canvas_width = 800;
 			var canvas_height = 600;
 			var blueTeamShield = new Sprite('shield.svg', -10, 10, 20, 30);
+			var redTeamShield = new Sprite('redShield.svg', 30, 10, 20, 30);
 
 			var game = {
 				interval: 0,
@@ -32,6 +33,8 @@
 				},
 				draw: function() {
 					// Draw everything on screen
+			        context.clearRect(0, 0, myCanvas.width, myCanvas.height);
+
 					this.players.forEach(function(player) {
 						//console.log(player);
 						context.save();
@@ -51,11 +54,11 @@
 				},
 				initialize: function() {
 					// Create 20 fake instances to demonstrate that it works
-					for (var i = 0; i < 20; i++) {
+					for (var i = 0; i < 1000; i++) {
 						var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
 						var randomEmail = Math.floor(Math.random() * emails.length);
-						// var randomTeam = Math.floor(Math.random() * 2);
-		    			var me = new Player(md5(emails[randomEmail]), 0);
+						var randomTeam = Math.floor(Math.random() * 2);
+		    			var me = new Player(md5(emails[randomEmail]), randomTeam);
 						this.players.push(me);
 					}
 					this.start();
@@ -90,7 +93,11 @@
 				this.img = new Image();
 				this.width = 40;
 				this.height = 40;
-				this.shield = blueTeamShield;
+				if (team <= 0) {
+					this.shield = blueTeamShield;
+				} else {
+					this.shield = redTeamShield;
+				}
 				// this.shield.xoffset = this.width/2;
 				// this.shield.yoffset = this.height/2;
 
