@@ -2,7 +2,7 @@ $j = jQuery.noConflict();
 
 
 $j(document).ready(function () {
-	var socket = io.connect('http://localhost:5000');
+	var socket = io.connect();
 	var icon;
 	
 	//socket gameChange
