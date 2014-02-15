@@ -1,7 +1,6 @@
 var express = require('express');
 var sendgrid = require('sendgrid');
 var routes = require('./routes');
-var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 
