@@ -1,5 +1,5 @@
 var express = require('express');
- var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame');
+var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame');
 var routes = require('./routes');
 var http = require('http');
 var path = require('path');
@@ -172,11 +172,11 @@ io.sockets.on('connection', function (socket) {
 		//test scores if any of the scores > %33
 		var teamA = 'p';
 		//find max
-		if ((scoreA.r > scoreA.p) && (scoreA.r > scoreA.s))
+		if ((scoreA.r >= scoreA.p) && (scoreA.r >= scoreA.s))
 		{
 			teamA = 'r';
 		}
-		else if ((scoreA.s > scoreA.r) && (scoreA.s > scoreA.p))
+		else if ((scoreA.s >= scoreA.r) && (scoreA.s >= scoreA.p))
 		{
 			teamA = 's';
 		}
