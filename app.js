@@ -32,7 +32,7 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index());
 app.get('/client', routes.client());
-app.post('/email', routes.email());
+app.post('/email', routes.email(sendgrid));
 	
 
 var count = 0;
