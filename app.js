@@ -4,13 +4,6 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
-/*
-var db = monk('mongodb://uxtools:uxtools@ds053728.mongolab.com:53728/heroku_app19991968');
-
-
-var mongodb = require("mongojs").connect('mongodb://uxtools:uxtools@ds053728.mongolab.com:53728/heroku_app19991968', ['companyitem']);
-
-*/
 
 var app = express();
 var server = require('http').createServer(app);
@@ -19,6 +12,8 @@ var io = require('socket.io').listen(server);
 server.listen(process.env.PORT || 5000);
 // all environments
 app.set('port', process.env.PORT || 5000);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 app.use(express.favicon());
 //app.use(express.logger('dev'));
