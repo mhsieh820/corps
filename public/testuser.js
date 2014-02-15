@@ -7,10 +7,9 @@
 // 	});
 // }
 
-var socket = io.connect();
+var socket = io.connect('http://localhost:5000');
 window.onload = function(){
 
-alert('TEST USER RUNS');
 $('#join').click(function(){
 	console.log('Join Clicked');
 	socket.emit('newEmail',{email:$('#email').val(),choice:$('#choice').val(),msg:$('#msg').val()});
