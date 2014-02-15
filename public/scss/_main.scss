@@ -1,0 +1,27 @@
+@mixin img_r {
+	display: block;
+	font: 0/0 a;
+	text-shadow: none;
+	color: transparent;
+	outline: none;
+	white-space: nowrap;
+}
+
+.box {
+	height: 500px;
+}
+
+#board-left {
+	background: #CCC;
+}
+
+#board-right {
+	background: #AAA;
+}
+
+#form {
+	margin-top: 20px;
+	input {
+		display: block;
+	}
+}
