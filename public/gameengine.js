@@ -3,15 +3,15 @@ var users={};
 
 window.onload = function() {
  	
-    alert('GAME ENGINE');
+    //alert('GAME ENGINE');
     console.log('Game engine')
     socket.on('ready', function (data) {
     	socket.emit('gameEngine',{})
-        alert(data);
+        //alert(data);
     });
     socket.on('emailReceived', function (data){
     	console.log('email recieved');
-    	alert(data);
+    	//alert(data);
     });    
 }
  
