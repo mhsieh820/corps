@@ -1,6 +1,6 @@
 $j = jQuery.noConflict();
 
-var socket = io.connect('http://localhost:5000');
+var socket = io.connect('www.corpsgame.com:3000');
 var users = {};
 
 window.onload = function() {
