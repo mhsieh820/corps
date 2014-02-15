@@ -51,8 +51,8 @@ io.sockets.on('connection', function (socket) {
   
   	//New Email Recieved
   	socket.on('newEmail',function (data) {
-
-  		var player=game.updatePlayer(data,count);
+	  	
+  		var player = game.updatePlayer(data,count);
   		game.sendPlayer(player,data.message);
 
     });
@@ -208,6 +208,7 @@ io.sockets.on('connection', function (socket) {
 		this.choice = "";
 		this.team = this.setTeam(count);
 		this.uid = this.hashEmail(email);
+	
 	};
 	
 	
