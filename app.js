@@ -37,6 +37,7 @@ var count = 0;
 var gameEngine = 0;
 io.sockets.on('connection', function (socket) {
   
+  	game = new Game(socket);
   	//connect game
   	socket.emit('ready','Ready!');
   	socket.on('gameEngine', function(data){
@@ -71,9 +72,12 @@ io.sockets.on('connection', function (socket) {
 		this.players = [];
 		this.score = {};
 		this.socket = socket;
+
 	}
 	
+	
 	Game.prototype.updateScore = function(choice) {
+		
 		
 		//need get old choice
 		
@@ -95,29 +99,39 @@ io.sockets.on('connection', function (socket) {
 	//score is sent when the top choice changes
 	Game.prototype.sendScore = function () {
 		
-		
+		io.sockets.socket(gameEngine).emit('updateScore', response);
 	};
 	
-	Game.prototype.sendPlayer = function () {
+	
+	//this is sent every time a new email comes in
+	Game.prototype.sendPlayer = function (player, message) {
 		
 		//send to client everything
 		//email hash
 		//timestamp
 		//message if exists
 		//team
-			
 		
+		//get current timestamp
+		var timestamp = new Date().getTime();	
+		
+		//player is the Player object
+		var response = { uid: player.uid, timestamp: timestamp, message: message, team: player.team };
+		
+			
+		io.sockets.socket(gameEngine).emit('sendGame',response);
 		
 	};
 	
 	
-	function Player(email, count) {
+	function Player(email) {
 		
 		this.email = email;
 		this.choice = "";
 		this.team = this.setTeam(count);
 		this.uid = this.hashEmail(email);
 	};
+	
 	
 	Player.prototype.hashEmail = function(email) {
 		
