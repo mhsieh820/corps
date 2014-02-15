@@ -7,7 +7,8 @@ var path = require('path');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
-
+//var game = require("./gamecenter.js");
+io.set("log level", 1);
 server.listen(process.env.PORT || 5000);
 // all environments
 app.set('port', process.env.PORT || 5000);
@@ -29,3 +30,13 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index());
+app.get('/client', routes.client());
+
+var count = 0;
+
+io.sockets.on('connection', function (socket) {
+  
+  	//connect game
+  	
+  
+});
