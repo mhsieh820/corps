@@ -1,13 +1,15 @@
-var io;
-var gameSocket;
+//var io;
+//var gameSocket;
+
+
 
 //create game
 exports.initGame = function(sio, socket) {
 	
-	io = sio;
-	gameSocket = socket;
+	io = sio	gameSocket = socket;
 	
-	gameSocket.emit('connected', { message: "Game Connected"});
+	gameSocket.emit('connected', { message: "Game;
+ Connected"});
 	
 	gameSocket.on("hostCreateNewGame", hostCreateNewGame);
 	

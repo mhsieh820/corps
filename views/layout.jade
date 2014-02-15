@@ -1,13 +1,15 @@
 doctype html
 html
-	head
-		title= title
-		link(rel='stylesheet', href='/css/normalize.css')
-		link(rel='stylesheet', href='/css/style.css')
-		script(type='text/javascript', src='/custom.modernizr.js')
-		script(type='text/javascript', src='/socket.io/socket.io.js')
-		script(type='text/javascript', src='/jquery.js')
-		script(type='text/javascript', src='/game.js')
-	body
-		div.row
-			block content
+	block header
+		head
+			title= title
+			link(rel='stylesheet', href='/css/normalize.css')
+			link(rel='stylesheet', href='/css/style.css')
+			script(type='text/javascript', src='/custom.modernizr.js')
+			script(type='text/javascript', src='/socket.io/socket.io.js')
+			script(type='text/javascript', src='/jquery.js')
+			//script(type='text/javascript', src='/game.js')
+			//script(type='text/javascript', src='/gameengine.js')
+			//script(type='text/javascript', src='/testuser.js')
+
+		block content

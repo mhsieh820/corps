@@ -33,10 +33,27 @@ app.get('/', routes.index());
 app.get('/client', routes.client());
 
 var count = 0;
-
+var gameEngine = 0;
 io.sockets.on('connection', function (socket) {
   
   	//connect game
+  	socket.emit('ready','Ready!');
+  	socket.on('gameEngine', function(data){
+    	gameEngine = socket.id;
+    	console.log(gameEngine);
+    	io.sockets.socket(gameEngine).emit('register','REGISTER?');
+    });
+
   	
+  //	console.log('emited ready');  	
   
+  	//New Email Recieved
+  	socket.on('newEmail',function (data) {
+  	console.log(data);
+  	io.sockets.socket(gameEngine).emit('emailReceived',data);
+
+    });
+
+  
+
 });

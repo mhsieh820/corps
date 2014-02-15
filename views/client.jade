@@ -1,7 +1,10 @@
 extends layout
-
+block append header
+	script(type='text/javascript', src='/testuser.js')
 block content
-	form#form(method='POST', action='/game',)
-		input#name(name='email', type='email')
+	body
+		div.row
+		input#email(name='email', type='email')
 		input#choice(name='choice', type='text')
-		input#gameJoin(name='Join', type='submit',value='Join')
+		input#msg(name='msg', type='text')
+		button#join(name='join', value='Join') Stop
