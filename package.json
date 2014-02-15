@@ -5,7 +5,7 @@
 		"sendgrid" : "*",
 		"express" : "*",
 		"socket.io" : "*",
-		"jade" : "*"	
+		"jade" : "*"
 	}
 
 }
