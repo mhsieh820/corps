@@ -53,7 +53,91 @@ io.sockets.on('connection', function (socket) {
   	io.sockets.socket(gameEngine).emit('emailReceived',data);
 
     });
+    
+    
+    //SOCKETS THAT COME IN FROM EMAIL
+    
+    //email
+    
+    //game ends
+    
+    
 
+	//game engine
+	function Game(socket) {
+		
+		//list of players
+		this.players = [];
+		this.score = {};
+		this.socket = socket;
+	}
+	
+	Game.prototype.updateScore = function(choice) {
+		
+		//need get old choice
+		
+		
+		//set new choice
+		
+		
+		//update score
+		
+	}
+	
+	Game.prototype.startGame = function () {
+		
+		//send to client to start the game
+		
+	};
+	
+	
+	//score is sent when the top choice changes
+	Game.prototype.sendScore = function () {
+		
+		
+	};
+	
+	Game.prototype.sendPlayer = function () {
+		
+		//send to client everything
+		//email hash
+		//timestamp
+		//message if exists
+		//team
+			
+		
+		
+	}
+	
+	
+	function Player() {
+		
+		this.email = "";
+		this.choice = "";
+		this.team = "";
+		this.uid = "";
+		
+	}
+	
+	Player.prototype.hashEmail = function(email) {
+		
+		//hash the email MD5 to uid
+		
+	}
+	
+	Player.prototype.updateChoice = 		function(choice) {
+		this.choice = choice;
+	}
+	
+	
+	Player.prototype.setTeam = function (count) {
+		
+		//choose team A or B
+		
+	}
+	
+	
+	
   
 
 });
