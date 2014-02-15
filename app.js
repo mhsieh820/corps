@@ -92,13 +92,22 @@ io.sockets.on('connection', function (socket) {
 	Game.prototype.startGame = function () {
 		
 		//send to client to start the game
+		io.sockets.socket(gameEngine).emit('gameTime', '1');
+		//start countdonw
 		
+		this.countDown(20, function () {
+			io.sockets.socket(gameEngine).emit('gameTime', '-1');
+		});
+		//end game
 	};
 	
 	
 	//score is sent when the top choice changes
-	Game.prototype.sendScore = function () {
-		
+	Game.prototype.sendScore = function (team) {
+	
+	
+		//team = 0,1 choice = r,p,s
+		var response = { team: team, choice: choice };
 		io.sockets.socket(gameEngine).emit('updateScore', response);
 	};
 	
@@ -123,6 +132,32 @@ io.sockets.on('connection', function (socket) {
 		
 	};
 	
+	Game.prototype.countDown = function (startTime, callback) {
+            var timer = setInterval(countItDown,1000);
+
+            // Decrement the displayed timer value on each 'tick'
+            function countItDown(){
+                startTime -= 1;
+                
+
+                if( startTime <= 0 ){
+                    // console.log('Countdown Finished.');
+
+                    // Stop the timer and do the callback.
+                    clearInterval(timer);
+                    callback();
+                    return;
+                }
+            }
+
+        },
+		
+	};
+	
+	
+//utility for timer	
+	
+	
 	
 	function Player(email) {
 		
@@ -141,7 +176,14 @@ io.sockets.on('connection', function (socket) {
 	};
 	
 	Player.prototype.updateChoice = function(choice) {
-		this.choice = choice;
+	
+		//take input and normalize
+		var string = trim(choice).charAt(0).toLowerCase();;
+		if (string == 'r' || string == 'p' || string == 's')
+		{
+			this.choice = string;
+		}
+		
 	};
 	
 	
@@ -150,11 +192,11 @@ io.sockets.on('connection', function (socket) {
 		//choose team A or B
 		if (count % 2 == 0)
 		{
-			this.team = 0;
+			this.team = 0; //TEAM A
 		}
 		else
 		{
-			this.team = 1;
+			this.team = 1; //TEAM B
 		}
 	};
 	
