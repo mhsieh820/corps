@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<script src="js/md5.min.js"></script>
+		<script src="js/jquery-2.1.0.min.js"></script>
+	</head>
+	<body>
+	    <script>
+			var canvas_width = 800;
+			var canvas_height = 600;
+			var blueTeamShield = new Sprite('shield.svg', -10, 10, 20, 30);
+
+			var game = {
+				interval: 0,
+				time: 0,
+				fps: 30,
+				players: [],
+				start: function() {
+
+					// Start code here
+					this.interval = setInterval(function() {
+						game.update();
+						game.draw();
+					}, 1000/this.fps);
+				},
+				stop: function() {
+					clearInterval(this.interval);
+				},
+				update: function() {
+					// Update code here
+				},
+				draw: function() {
+					// Draw everything on screen
+					this.players.forEach(function(player) {
+						//console.log(player);
+						context.save();
+						context.translate(player.x, player.y);
+						player.draw();
+						player.shield.draw();
+						context.restore();
+					});
+					// console.log(this.players);
+					// for (player in this.players)
+					// {
+					// 	//player.draw();
+					// 	console.log(player);
+					// }
+
+
+				},
+				initialize: function() {
+					// Create 20 fake instances to demonstrate that it works
+					for (var i = 0; i < 20; i++) {
+						var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
+						var randomEmail = Math.floor(Math.random() * emails.length);
+						// var randomTeam = Math.floor(Math.random() * 2);
+		    			var me = new Player(md5(emails[randomEmail]), 0);
+						this.players.push(me);
+					}
+					this.start();
+				}
+			};
+
+			// Sprite constructor
+			function Sprite(filename, xoffset, yoffset, width, height) {
+				var that = this;
+				this.loaded = false;
+				this.img = new Image();
+				this.img.onload = function() {
+					that.loaded = true;
+				}
+				this.img.src = filename;
+				this.xoffset = xoffset;
+				this.yoffset = yoffset;
+				this.width = width;
+				this.height = height;
+			}
+
+			Sprite.prototype.draw = function() {
+				if (this.loaded)
+					context.drawImage(this.img, this.xoffset, this.yoffset, this.width, this.height);
+			}
+
+			// Player constructor
+			function Player(id, team) {
+				var that = this;
+				this.id = id;
+				this.gLoaded = false;
+				this.img = new Image();
+				this.width = 40;
+				this.height = 40;
+				this.shield = blueTeamShield;
+				// this.shield.xoffset = this.width/2;
+				// this.shield.yoffset = this.height/2;
+
+      	        this.img.onload = function() {
+      	        	that.gLoaded = true;
+      	        	context.drawImage(that.img, 0, 0, that.width, that.height);
+			    };
+			    this.img.src = 'http://www.gravatar.com/avatar/' + id;
+
+				this.team = team;
+				this.x = Math.random() * (canvas_width - this.width);
+				this.y = Math.random() * (canvas_height - this.height);
+				// newPlayer.shield = this.getShield();
+			};
+
+			Player.prototype.draw = function() {
+				//console.log("DRAW MOTHERUFKCER");
+				if (this.gLoaded)
+					context.drawImage(this.img, 0, 0, this.width, this.height);
+			};
+
+			Player.prototype.getShield = function(team) {
+					var that = this;
+					var newShield = new Image();
+					newShield.src = './shield.svg';
+					newShield.onload = function() {
+						that.shield = newShield;
+					}
+			};
+
+		    // window.requestAnimFrame = (function(callback) {
+		    //     return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+		    //     function(callback) {
+			   //      window.setTimeout(callback, 1000 / 60);
+		    //     };
+		    // })();
+
+		    // function animate() {
+			   //  // update
+
+			   //  // clear
+			   //  context.clearRect(0, 0, canvas.width, canvas.height);
+
+
+			   //  // draw stuff
+			   //  context.drawImage(shield,0,0);
+		    //     context.drawImage(gravatar, 69, 50);
+
+
+			   //  // request new frame
+			   //  requestAnimFrame(function() {
+			   //  	animate();
+			   //  });
+
+		    // }
+
+			// Setup a canvas element
+			var myCanvas = document.createElement('canvas');
+			myCanvas.setAttribute("id", "myCanvas");
+			myCanvas.width = canvas_width;
+			myCanvas.height = canvas_height;
+
+			// Add canvas to DOM
+			document.getElementsByTagName('body') [0].appendChild(myCanvas);
+		    var context = myCanvas.getContext('2d');
+
+	    	// Run this when the page loads
+		    $(document).ready(function () {
+		    	game.initialize();
+		    });
+
+	    </script>
+
+
+	</body>
+
+
+</html>
