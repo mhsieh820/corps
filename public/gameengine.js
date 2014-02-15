@@ -1,6 +1,6 @@
 $j = jQuery.noConflict();
 
-var socket = io.connect('http://localhost:5000');
+var socket = io.connect('/');
 var users = {};
 
 window.onload = function() {

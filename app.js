@@ -10,13 +10,14 @@ var io = require('socket.io').listen(server);
 var md5 = require("./md5.min.js");
 //var game = require("./gamecenter.js");
 io.set("log level", 1);
-server.listen(process.env.PORT || 5000);
+server.listen(process.env.PORT || 3000);
 // all environments
-app.set('port', process.env.PORT || 5000);
+app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(express.favicon());
+app.use(express.bodyParser());
 //app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
@@ -33,12 +34,31 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index());
 app.get('/client', routes.client());
 app.get('/sendemail', routes.sendemail(sendgrid));
-app.post('/email', routes.email(sendgrid));
-	
+
 
 var count = 0;
+var gameEngine;
+// The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
+app.post('/email', function (req, res) {
 
-var gameEngine = 0;
+	// SendGrid gives us a lot of information, however, here we only need the person's email (to make sure they don't vote twice) and the subject which serves as their vote.
+	// Note: Make sure you configure your app to use Express' Body Parse by doing: app.use(express.bodyParser());
+	var email = {
+		'from' : req.body.from,
+		'subject': req.body.subject,
+		'message' : req.body.text
+	};
+	
+	var player = game.updatePlayer(data);
+	  		
+	game.sendPlayer(player, data.msg);
+  		
+	game.sendScore();
+
+});
+
+
+
 io.sockets.on('connection', function (socket) {
   	
   	game = new Game(io, socket);
@@ -54,6 +74,7 @@ io.sockets.on('connection', function (socket) {
   //	console.log('emited ready');  	
   
   	//New Email Recieved
+/*
   	socket.on('newEmail',function (data) {
   		console.log('email received'+data.email+data.msg+data.choice);
   		
@@ -64,6 +85,7 @@ io.sockets.on('connection', function (socket) {
 	  	game.sendScore();
 	  	
     });
+*/
     
      //SOCKETS THAT COME IN FROM EMAIL
    
