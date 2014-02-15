@@ -33,8 +33,6 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index());
 app.get('/client', routes.client());
-app.get('/sendemail', routes.sendemail(sendgrid));
-
 
 var count = 0;
 var gameEngine;
@@ -61,7 +59,7 @@ app.post('/email', function (req, res) {
 
 io.sockets.on('connection', function (socket) {
   	
-  	game = new Game(io, socket);
+  	game = new Game();
   	//connect game
   	//socket.emit('ready','Ready!');
   	socket.on('gameEngine', function(data){
