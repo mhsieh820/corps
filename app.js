@@ -52,8 +52,11 @@ io.sockets.on('connection', function (socket) {
   	//New Email Recieved
   	socket.on('newEmail',function (data) {
   		console.log('email received'+data.email+data.msg+data.choice);
-  		var player=game.updatePlayer(data,count);
-  		game.sendPlayer(player,data.message);
+  		
+  		var player = game.updatePlayer(data, count);
+	  		
+	  	game.sendPlayer(player, data.message);
+  		
 
     });
     
@@ -78,31 +81,33 @@ io.sockets.on('connection', function (socket) {
 
 	}
 
-	Game.prototype.updatePlayer = function(data,count) {
+	Game.prototype.updatePlayer = function(data, count, callback) {
 		var hash=md5.md5(data.email);
 		console.log('hash'+hash);
 		//if player exists, update score and send player to client
 		for(var i=0;i< this.players.length;i++){
 			if( hash == this.players[i].uid){
-				console.log('plaey at position'+i);
-				var oldChoice= this.players[i].choice;
-				var newChoice= this.players[i].updateChoice(data.choice);
-				if(newChoice!=null){
-					game.updateScore(oldChoice, newChoice, this.players[i].team);
+				console.log('play at position'+i);
+				var oldChoice = this.players[i].choice;
+				var newChoice = this.players[i].updateChoice(data.choice);
+				if(newChoice != null){
+					this.updateScore(oldChoice, newChoice, this.players[i].team);
 				}
 				else{
-					this.players[i].choice=oldChoice;
+					this.players[i].choice = oldChoice;
 				}
-				break;
+					break;
 				}
 		}
-		//if player doesn't exist, create new player	
-				if(i==this.players.length){
-					console.log('Creating new player');
-					this.players[i]= new Player(this.hash, data.email,data.choice,++count);
-					this.updateScore('null', this.players[i].choice,this.players[i].team);
-				}
 
+		//if player doesn't exist, create new player	
+		if(i == this.players.length){
+			console.log('Creating new player');
+			this.players[i] = new Player(this.hash, data.email,data.choice,++count);
+			this.updateScore('null', this.players[i].choice,this.players[i].team);
+		}
+
+		return this.players[i];
 	}
 	
 
@@ -206,7 +211,7 @@ io.sockets.on('connection', function (socket) {
 	
 	
 	
-	function Player(hash,email,choice,count) {
+	function Player(hash, email, choice, count) {
 		this.email = email;
 		this.choice = choice;
 		this.team = this.setTeam(count);
