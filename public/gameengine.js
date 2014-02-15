@@ -31,19 +31,19 @@ window.onload = function() {
 	   //teamA, teamB 
     });
     
-    socket.on('sendPlayer', function (response) {
-	    // uid, timestamp, message, team
-	    console.log(response);
-	    if (response.team == 0)
-	    {
-		    //teamA
-		    $j("#teamA").append("<div>" + response.uid + " " + response.timestamp + " Message:  " + response.message + "</div>");
-	    }
-	    else
-	    {
-		    //teamB
-		    $j("#teamB").append("<div>" + response.uid + " " + response.timestamp + " Message:  " + response.message + "</div>");
-	    }
-    });
+    // socket.on('sendPlayer', function (response) {
+	   //  // uid, timestamp, message, team
+	   //  console.log(response);
+	   //  if (response.team == 0)
+	   //  {
+		  //   //teamA
+		  //   $j("#teamA").append("<div>" + response.uid + " " + response.timestamp + " Message:  " + response.message + "</div>");
+	   //  }
+	   //  else
+	   //  {
+		  //   //teamB
+		  //   $j("#teamB").append("<div>" + response.uid + " " + response.timestamp + " Message:  " + response.message + "</div>");
+	   //  }
+    // });
 
  
