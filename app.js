@@ -46,7 +46,7 @@ io.sockets.on('connection', function (socket) {
   	socket.on('gameEngine', function(data){
     	gameEngine = socket.id;
     	console.log(gameEngine);
-    	io.sockets.socket(gameEngine).emit('register','REGISTER?');
+    	io.sockets.socket(gameEngine).emit('register', { register: 'yes' });
     });
 
   	
@@ -60,7 +60,7 @@ io.sockets.on('connection', function (socket) {
 	  		
 	  	game.sendPlayer(player, data.message);
   		
-
+	  	game.sendScore();
     });
     
      //SOCKETS THAT COME IN FROM EMAIL
@@ -147,31 +147,63 @@ io.sockets.on('connection', function (socket) {
 						break;
 			default: break;
 		}
-		console.log('scoreA r:'+this.scoreA.r+ 'p: '+ this.scoreA.p+'s: '+this.scoreA.s);
-		console.log('scoreB r:'+this.scoreB.r+ 'p: '+ this.scoreB.p+'s: '+this.scoreB.s);
+
 	}
 	
 
 	Game.prototype.startGame = function () {
 		
 		//send to client to start the game
-		io.sockets.socket(gameEngine).emit('gameTime', '1');
+		io.sockets.socket(gameEngine).emit('gameTime', {gameTime: '1'});
 		//start countdonw
 		
 		this.countDown(20, function () {
-			io.sockets.socket(gameEngine).emit('gameTime', '-1');
+			io.sockets.socket(gameEngine).emit('gameTime', {gameTime: '-1'});
 		});
 		//end game
 	};
 	
 	
 	//score is sent when the top choice changes
-	Game.prototype.sendScore = function (team) {
+	Game.prototype.sendScore = function () {
+		var scoreA = this.scoreA;
+		var scoreB = this.scoreB;
+		//test scores if any of the scores > %33
+		var teamA = 'p';
+		//find max
+		if ((scoreA.r > scoreA.p) && (scoreA.r > scoreA.s))
+		{
+			teamA = 'r';
+		}
+		else if ((scoreA.s > scoreA.r) && (scoreA.s > scoreA.p))
+		{
+			teamA = 's';
+		}
+
+		var teamB = 'p';
+		//find max
+		if ((scoreB.r >= scoreB.p) && (scoreB.r >= scoreB.s))
+		{
+			teamB = 'r';
+		}
+		else if ((scoreB.s >= scoreB.r) && (scoreB.s >= scoreB.p))
+		{
+			teamB = 's';
+		}
+		
+		
+		
+		if (count > 3)
+		{
+			
+			//team = 0,1 choice = r,p,s
+			var response = { teamA: team, teamB: teamB };
+			io.sockets.socket(gameEngine).emit('updateScore', {response: response});
+			
+		}
 	
 	
-		//team = 0,1 choice = r,p,s
-		var response = { team: team, choice: choice };
-		io.sockets.socket(gameEngine).emit('updateScore', response);
+		
 	};
 	
 	
@@ -191,7 +223,7 @@ io.sockets.on('connection', function (socket) {
 		var response = { uid: player.uid, timestamp: timestamp, message: message, team: player.team };
 		
 			
-		io.sockets.socket(gameEngine).emit('sendGame',response);
+		io.sockets.socket(gameEngine).emit('sendPlayer', {response: response});
 	
 	};
 	
