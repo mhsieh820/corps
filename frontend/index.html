@@ -7,9 +7,23 @@
 	</head>
 	<body>
 	    <script>
-			var canvas_width = 800;
-			var canvas_height = 600;
+			var canvas_width = window.innerWidth;
+			var canvas_height = window.innerHeight;
 			var blueTeamShield = new Sprite('shield.svg', -10, 10, 20, 30);
+			var redTeamShield = new Sprite('redShield.svg', 30, 10, 20, 30);
+			var bgSprite = new Sprite('bg.svg', 0, 0, canvas_width, canvas_height);
+			var MAX_SPEED = 2;
+			var BLUE_TEAM = 0;
+			var RED_TEAM = 1;
+
+			/**
+			 * Clamps a number. Based on Zevan's idea: http://actionsnippet.com/?p=475
+			 * params: val, min, max
+			 * Author: Jakub Korzeniowski
+			 * Agency: Softhis
+			 * http://www.softhis.com
+			 */
+			(function(){Math.clamp=function(a,b,c){return Math.max(b,Math.min(c,a));}})();
 
 			var game = {
 				interval: 0,
@@ -29,9 +43,14 @@
 				},
 				update: function() {
 					// Update code here
+					this.players.forEach(function (player) {
+						player.update();
+					})
 				},
 				draw: function() {
 					// Draw everything on screen
+			        context.clearRect(0, 0, myCanvas.width, myCanvas.height);
+			        bgSprite.draw();
 					this.players.forEach(function(player) {
 						//console.log(player);
 						context.save();
@@ -51,11 +70,11 @@
 				},
 				initialize: function() {
 					// Create 20 fake instances to demonstrate that it works
-					for (var i = 0; i < 20; i++) {
+					for (var i = 0; i < 400; i++) {
 						var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
 						var randomEmail = Math.floor(Math.random() * emails.length);
-						// var randomTeam = Math.floor(Math.random() * 2);
-		    			var me = new Player(md5(emails[randomEmail]), 0);
+						var randomTeam = Math.floor(Math.random() * 2);
+		    			var me = new Player(md5(emails[randomEmail]), randomTeam);
 						this.players.push(me);
 					}
 					this.start();
@@ -90,7 +109,17 @@
 				this.img = new Image();
 				this.width = 40;
 				this.height = 40;
-				this.shield = blueTeamShield;
+				this.vx = Math.random() * MAX_SPEED;
+				this.vy = Math.random() * MAX_SPEED;
+				var randomX = -1;
+				if (team <= BLUE_TEAM) {
+					this.shield = blueTeamShield;
+					randomX = Math.random() * (canvas_width/2 - this.width) + canvas_width/2;
+				} else {
+					this.shield = redTeamShield;
+					randomX = Math.random() * (canvas_width/2-this.width);
+				}
+				this.x = randomX;
 				// this.shield.xoffset = this.width/2;
 				// this.shield.yoffset = this.height/2;
 
@@ -101,8 +130,7 @@
 			    this.img.src = 'http://www.gravatar.com/avatar/' + id;
 
 				this.team = team;
-				this.x = Math.random() * (canvas_width - this.width);
-				this.y = Math.random() * (canvas_height - this.height);
+				this.y = Math.random() * (canvas_height*.75 - this.height) + canvas_height*.25;
 				// newPlayer.shield = this.getShield();
 			};
 
@@ -111,6 +139,45 @@
 				if (this.gLoaded)
 					context.drawImage(this.img, 0, 0, this.width, this.height);
 			};
+
+			Player.prototype.update = function() {
+				// Move players by velocity
+				this.x += this.vx;
+				this.y += this.vy;
+
+				// Make sure you you haven't gone past the boundaries
+				switch (this.team) {
+					case (BLUE_TEAM):
+					if (this.x < canvas_width/2 || this.x > canvas_width-this.width) {
+						this.vx = this.vx * -1;
+						this.x = Math.clamp(this.x,canvas_width/2,canvas_width-this.width);
+					}
+					if (this.y < canvas_height*.25 || this.y > canvas_height-this.height) {
+						this.vy = this.vy * -1;
+						this.y = Math.clamp(this.y,canvas_height*.25,canvas_height-this.height);
+					}
+					break;
+
+					case (RED_TEAM):
+					if (this.x < 0 || this.x > canvas_width/2-this.width) {
+						this.vx = this.vx * -1;
+						this.x = Math.clamp(this.x,0,canvas_width/2-this.width);
+					}
+					if (this.y < canvas_height*.25 || this.y > canvas_height-this.height) {
+						this.vy = this.vy * -1;
+						this.y = Math.clamp(this.y,canvas_height*.25,canvas_height-this.height);
+					}
+					break;
+
+					default:
+					break;
+				}
+
+				// Detect edges and bouce players depending on team
+			}
+
+
+
 
 			Player.prototype.getShield = function(team) {
 					var that = this;
