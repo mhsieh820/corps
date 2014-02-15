@@ -100,7 +100,8 @@ io.sockets.on('connection', function (socket) {
 				if(i==this.players.length){
 					console.log('Creating new player');
 					this.players[i]= new Player(this.hash, data.email,data.choice,++count);
-					this.updateScore('null', this.players[i].choice,this.players[i].team);
+					this.players[i].updateChoice(this.players[i].choice);
+					this.updateScore('null',this.players[i].choice ,this.players[i].team);
 				}
 
 	}
@@ -115,6 +116,7 @@ io.sockets.on('connection', function (socket) {
 		}
 		
 		//need get old choice
+		
 		switch (oldChoice){
 			case 'r': score.r--;
 						break;
@@ -224,7 +226,7 @@ io.sockets.on('connection', function (socket) {
 	Player.prototype.updateChoice = function(choice) {
 		
 		//take input and normalize
-		var string = trim(choice).charAt(0).toLowerCase();;
+		var string = choice.trim().charAt(0).toLowerCase();;
 		if (string == 'r' || string == 'p' || string == 's')
 		{
 			this.choice = string;
