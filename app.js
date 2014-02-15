@@ -32,6 +32,8 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index());
 app.get('/client', routes.client());
+app.post('/email', routes.email());
+	
 
 var count = 0;
 
@@ -117,7 +119,7 @@ io.sockets.on('connection', function (socket) {
 	
 
 	Game.prototype.updateScore = function(oldChoice,newChoice,team) {
-		if(team==1){
+		if(team == 1){
 			score = this.scoreA;
 		}
 		else{
@@ -214,7 +216,7 @@ io.sockets.on('connection', function (socket) {
     };
 			
 	
-//utility for timer	
+	//utility for timer	
 	
 	
 	
@@ -249,7 +251,7 @@ io.sockets.on('connection', function (socket) {
 	Player.prototype.setTeam = function () {
 		
 		//choose team A or B
-		console.log("COUNT: " + count);
+		
 		if ((count % 2) == 0)
 		{
 			this.team = 0; //TEAM A

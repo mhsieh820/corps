@@ -9,3 +9,11 @@ exports.client = function () {
 		res.render('client');	
 	}
 };
+
+exports.email = function () {
+	
+	return function(req, res) {
+		res.render('client');	
+	}
+	
+};
