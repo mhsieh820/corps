@@ -71,9 +71,9 @@ io.sockets.on('connection', function (socket) {
 		
 		//list of players
 		this.players = [];
-		this.score = {};
+		this.scoreA = {r:"0",p:"0",s:"0"};
+		this.scoreB = {r:"0",p:"0",s:"0"};
 		this.socket = socket;
-<<<<<<< HEAD
 		this.count=0;
 
 	}
@@ -86,7 +86,7 @@ io.sockets.on('connection', function (socket) {
 				var oldChoice=players[i].choice;
 				var newChoice=players[i].updateChoice(data.choice);
 				if(newChoice!=null){
-					game.updateScore(oldChoice,newChoice);
+					game.updateScore(oldChoice,newChoice,players[i].team);
 				}
 				else{
 					players[i].choice=oldChoice;
@@ -97,21 +97,19 @@ io.sockets.on('connection', function (socket) {
 		//if player doesn't exist, create new player	
 				if(i==players.length()){
 					players[i]= new Player(this.hash, data.email,data.choice,++count);
-					game.updateScore('null',players[i].choice);
+					game.updateScore('null',players[i].choice,players[i].team);
 				}
 
 	}
 	
 
-	Game.prototype.updateScore = function(oldChoice,newChoice) {
-=======
-
-	}
-	
-	
-	Game.prototype.updateScore = function(choice) {
->>>>>>> c191b5fad4d944de61a8d38e12f5e96989a5b4a6
-		
+	Game.prototype.updateScore = function(oldChoice,newChoice,team) {
+		if(team==1){
+			score=scoreA;
+		}
+		else{
+			score=scoreB;
+		}
 		
 		//need get old choice
 		switch (oldChoice){
@@ -167,9 +165,7 @@ io.sockets.on('connection', function (socket) {
 		//timestamp
 		//message if exists
 		//team
-<<<<<<< HEAD
-=======
-		
+
 		//get current timestamp
 		var timestamp = new Date().getTime();	
 		
@@ -178,8 +174,7 @@ io.sockets.on('connection', function (socket) {
 		
 			
 		io.sockets.socket(gameEngine).emit('sendGame',response);
->>>>>>> c191b5fad4d944de61a8d38e12f5e96989a5b4a6
-		
+	
 	};
 	
 	Game.prototype.countDown = function (startTime, callback) {
