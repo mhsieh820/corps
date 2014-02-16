@@ -41,10 +41,10 @@ app.get('/', routes.index());
 app.get('/client', routes.client());
 
 var count = 0;
-var game;
+var game = new Game();;
 var gameEngine;
 var gameDuration = 180;
-var gameOn=false;
+var gameOn = true;
 
 
 
@@ -127,7 +127,7 @@ function Game() {
 	
 
 	Game.prototype.startGame = function () {
-		gameOn=true;
+		gameOn = true;
 		// Start recieving emails
 
 
@@ -310,11 +310,10 @@ function Game() {
 io.sockets.on('connection', function (socket) {
   	
   	//Server is ready to pair with it's device
-  	socket.emit('ready','Ready!');
+  	//socket.emit('ready','Ready!');
 
   	//Server waits for client input
   	socket.on('startGame', function(data){
-  		game = new Game();
   		console.log('New Game Started');
     	gameEngine = socket.id;
     	console.log(gameEngine);
@@ -324,10 +323,10 @@ io.sockets.on('connection', function (socket) {
 
     });
 
-socket.on('gameEnd', function(){
-	console.log('This shit is done yo!');
-	gameOn=false;
-});
+	socket.on('gameEnd', function(){
+		console.log('This shit is done yo!');
+		gameOn = false;
+	});
   	
 
   	socket.on('newEmail',function (data) {
