@@ -122,6 +122,7 @@
 				team1: "",
 				team2: "",
 				running: false,
+				finished: false,
 				start: function() {
 
 					// Start code here
