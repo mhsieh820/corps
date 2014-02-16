@@ -40,7 +40,7 @@ app.get('/client', routes.client());
 var count = 0;
 var gameEngine;
 // The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
-app.post('/email', express.multipart({defer: true}) , function (req, res) {
+app.post('/email', express.multipart({defer: true, uploadDir: 'temp' }) , function (req, res) {
 
 	// SendGrid gives us a lot of information, however, here we only need the person's email (to make sure they don't vote twice) and the subject which serves as their vote.
 	// Note: Make sure you configure your app to use Express' Body Parse by doing: app.use(express.bodyParser());
