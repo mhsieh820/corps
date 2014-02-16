@@ -76,8 +76,8 @@ app.post('/email', function (req, res) {
     	sendgrid.send({
 		to: from,
 		from: 'game@corpsgame.com',
-		fromname: 'CMU Team',
-		subject: 'Response',
+		fromname: 'coRPS Game',
+		subject: 'Welcome to coRPS!',
 		html: html,
 		headers: {
 			'MIME-Version' : "1.0",
