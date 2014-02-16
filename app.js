@@ -1,5 +1,5 @@
 var express = require('express');
-var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame', {api: 'smtp', port: 465});
+var sendgrid  = require('sendgrid')('a', 'corpsgame');
 var routes = require('./routes');
 var http = require('http');
 var fs = require('fs');
@@ -25,7 +25,7 @@ app.use(express.bodyParser());
 
 //app.use(express.logger('dev'));
 
-app.use(express.json());
+//app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
@@ -41,10 +41,11 @@ app.get('/', routes.index());
 app.get('/client', routes.client());
 
 var count = 0;
-var game = new Game();;
+var game = new Game();
 var gameEngine;
 var gameDuration = 180;
 var gameOn = true;
+var teamChoice = null;
 
 
 
@@ -181,7 +182,10 @@ function Game() {
 			
 			//team = 0,1 choice = r,p,s
 			var response = { teamA: teamA, teamB: teamB };
-			io.sockets.in(gameEngine).emit('updateScore', response);
+			teamChoice=response;
+			//io.sockets.in(gameEngine).emit('updateScore', response);
+			io.sockets.socket(gameEngine).emit('updateScore',response);
+	
 			
 		}
 	
@@ -203,36 +207,40 @@ function Game() {
 		var timestamp = new Date().getTime();	
 		
 		//player is the Player object
-		var response = { uid: player.uid, timestamp: timestamp, message: message, team: player.team };
+		var response = { uid: player.uid, timestamp: timestamp, message: message, team: player.team, choice: player.choice};
 		
-			
-		io.sockets.in(gameEngine).emit('sendPlayer',  response);
+
+		io.sockets.socket(gameEngine).emit('sendPlayer',response);
 	
 	};
+
+	Game.prototype.findWinner=function(){
+		if(teamChoice != null){
+			var a=teamChoice.teamA;
+			var b=teamChoice.teamB;
+			var winner;
+			if(a == 'r' && b =='s')
+				winner='Team A';
+			else if(a == 's' && b == 'p')
+				winner='Team A';
+			else if(a == 'p' && b == 'r')
+				winner='Team A';
+			else if(b == 'r' && a =='s')
+				winner='Team B';
+			else if(b == 's' && a == 'p')
+				winner='Team B';
+			else if(b == 'p' && a == 'r')
+				winner='Team B';
+			else
+				winner='TIE!';
+
+			console.log("Sending winner: " + winner);
+			io.sockets.socket(gameEngine).emit('sendWinner',winner);
+			return winner;
+		}
+	};
 	
-	// Game.prototype.countDown = function (counter, callback) {
- //            var timer = setInterval(countItDown,1000);
 
- //            // Decrement the displayed timer value on each 'tick'
- //            function countItDown(){
- //                counter -= 1;
- //                console.log('time:'+startTime+'\n');
- //                io.sockets.socket(gameEngine).emit('timeUpdate',counter);
-
- //                if( counter <= 0 ){
- //                    console.log('Countdown Finished.');
-
-
- //                    // Stop the timer and do the callback.
- //                    clearInterval(timer);
- //                    callback();
- //                    return;
- //                }
- //            }
-
- //    };
-			
-	
 	//utility for timer	
 	
 	
@@ -282,28 +290,7 @@ function Game() {
 
 
   	
-  //	console.log('emited ready');  	
-  
-  	//New Email Recieved
 
-  	
-
-    
-     //SOCKETS THAT COME IN FROM EMAIL
-   
-    
-    //email
-    
-    //game ends
-    
-    
-
-	//game engine
-	
-	
-	
-	
-  
 
 
 //Client Connects
@@ -313,24 +300,23 @@ io.sockets.on('connection', function (socket) {
   	//socket.emit('ready','Ready!');
 
   	//Server waits for client input
-  	socket.on('startGame', function(data){
+  	socket.on('gameStart', function() {
   		console.log('New Game Started');
     	gameEngine = socket.id;
     	console.log(gameEngine);
-    	game.startGame(data);
-
-    	//io.sockets.socket(gameEngine).emit('register', { register: 'yes' });
-
+    	game.startGame();
     });
 
 	socket.on('gameEnd', function(){
-		console.log('This shit is done yo!');
+		console.log("Game end message received.");
+		var winner=game.findWinner();
 		gameOn = false;
 	});
   	
 
   	socket.on('newEmail',function (data) {
-  		
+  		console.log("New Email received");
+  		console.log(data);
   		var player = game.updatePlayer(data);
 	  		
 	  	game.sendPlayer(player, data.msg);
@@ -345,7 +331,7 @@ io.sockets.on('connection', function (socket) {
 // The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
 app.post('/email', function (req, res) {
 
-	//while(gameOn){
+	//while(ga){
 	
 	if(potentialFrom = req.body.from.match(/<(.+)>/)){
 		var from = potentialFrom[1];
@@ -365,10 +351,13 @@ app.post('/email', function (req, res) {
   		
 	game.sendScore();
 	
+/*
+
 	fs.readFile('template/email.html', function (err, html) {
     if (err) {
-        throw err; 
+        console.log(err) 
     }
+    else{
     	
     	sendgrid.send({
 		to: from,
@@ -376,21 +365,13 @@ app.post('/email', function (req, res) {
 		from: 'game@corpsgame.com',
 		fromname: 'coRPS Game',
 		subject: 'Welcome to coRPS!',
-		html: html,
-		generateTextFromHTML: true,
-		headers: {
-			'MIME-Version' : "1.0",
-			'Content-Type': "text/html; charset=ISO-8859-1"
-
-		}
+		html: html
 	}, function(success, message) {
 		console.log(success);
 	});	
+    }
     
     });  	
-
-	
-	//}
+*/
 
 });
-

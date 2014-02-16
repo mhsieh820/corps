@@ -1,3 +1,8 @@
+		    $j = jQuery.noConflict();
+
+			var socket = io.connect('/');
+			var gameDuration = 20;
+
 			var canvas_width = window.innerWidth;
 			var canvas_height = window.innerHeight;
 			var blueTeamShield = new Sprite('shield.svg', -10, 10, 20, 30);
@@ -12,13 +17,17 @@
 			var catapultBody2 = new Sprite('image/catapultBody_rev.svg', .70 * canvas_width, 300, 124, 72);
 			var catapultArm2 = new Sprite('image/catapultArm_rev.svg', 0 , 0, 168, 23);
 			
+			var bomb = new Sprite('image/bomb.svg', -200, -190, 142, 179);
 			var rock1 = new Sprite('image/bomb-rock.svg', -200, -190, 142, 179);
-			var paper1 = new Sprite('image/bomb-rock.svg', -200, -190, 142, 179);
-			var scissor1 = new Sprite('image/bomb-rock.svg', -200, -190, 142, 179);
+			var paper1 = new Sprite('image/bomb-paper.svg', -200, -190, 142, 179);
+			var scissor1 = new Sprite('image/bomb-scissors.svg', -200, -190, 142, 179);
 			
+			var bomb2 = new Sprite('image/bomb.svg', 55, -168, 142, 179);
 			var rock2 = new Sprite('image/bomb-rock.svg', 55, -168, 142, 179);
-			var paper2 = new Sprite('image/bomb-rock.svg', 0, 0, 142, 179);
-			var scissor2 = new Sprite('image/bomb-rock.svg', 0, 0, 142, 179);
+			var paper2 = new Sprite('image/bomb-paper.svg', 55, -168, 142, 179);
+			var scissor2 = new Sprite('image/bomb-scissors.svg', 55, -168, 142, 179);
+
+			var logo = new Sprite('image/logo.png', 0, 0, 348, 206);
 			
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
@@ -34,6 +43,8 @@
 			
 			var rateOfChange = 1000 / 3000;
 			var rateOfFinalChange = 2000 / 3000;
+			
+			var percentage = 1;
 			/**
 			 * Clamps a number. Based on Zevan's idea: http://actionsnippet.com/?p=475
 			 * params: val, min, max
@@ -91,9 +102,19 @@
 
 		    });
 
+		    socket.on('sendWinner' , function (data) {
+		    	// Team A, Team B, TIE!
+		    	console.log("Winner: " + data);
+		    	game.finishAnimation(data);
+		    	game.ended = true;
+		    });
+
 		    socket.on('updateScore', function(response) {
-			    $j("#scoreA").text(response.teamA);
-			    $j("#scoreB").text(response.teamB);
+			    // $j("#scoreA").text(response.teamA);
+			    // $j("#scoreB").text(response.teamB);
+			    game.team1 = response.teamA;
+			    game.team2 = response.teamB;
+			    console.log("[SCORE] Team1: " + response.teamA + " Team2: " + response.teamB);
 			   //teamA, teamB
 		    });
 
@@ -105,6 +126,10 @@
 				players: [],
 				currentAngle: startAngle,
 				currentAngle2: startAngle2,
+				team1: "",
+				team2: "",
+				running: false,
+				ended: false,
 				start: function() {
 
 					// Start code here
@@ -123,27 +148,66 @@
 						player.update();
 					})
 				},
+				finishAnimation: function(winner) {
+					// Team A, Team B, TIE!
+					if (winner == "Team A") {
+						this.players.forEach(function(player) {
+							//console.log(player);
+							player.vx = 15;
+						});
+					} else if (winner == "Team B") {
+						this.players.forEach(function(player) {
+							//console.log(player);
+							player.vx = -15;
+						});
+					} else {
+						this.players.forEach(function(player) {
+							//console.log(player);
+							if (player.team == 0) {
+								player.vx = -15;
+							} else {
+								player.vx = 15;
+							}
+						});
+					}
+
+				},
 				draw: function() {
 					// Draw everything on screen
 			        context.clearRect(0, 0, myCanvas.width, myCanvas.height);
 			        bgSprite.draw();
-
-					if (game.currentAngle > endAngle)
+			        context.save();
+			        context.translate(myCanvas.width/2-(348/2), 50);
+		        	logo.draw();
+			        context.restore();
+					
+					
+					if (game.currentAngle > endAngle && game.running)
 					{
 						//console.log(game.time);
 						angle = game.currentAngle - rateOfChange;
 						game.currentAngle = angle;
 					}
 					
-					game.drawCatapult(angle);
+					game.drawCatapult(game.currentAngle);
 					
-					if (game.currentAngle2 < endAngle2)
+					if (game.currentAngle2 < endAngle2 && game.running)
 					{
 						//console.log(game.time);
 						angle2 = game.currentAngle2 + rateOfChange;
 						game.currentAngle2 = angle2;
 					}
-					game.drawCatapult2(angle2);
+					game.drawCatapult2(game.currentAngle2);
+
+					//timer
+					
+					if (game.running)
+					{
+						//change percentage
+					}
+					
+					game.drawTimer(percentage);
+
 
 					this.players.forEach(function(player) {
 						//console.log(player);
@@ -186,7 +250,16 @@
 					// context.translate(bomb_x + offset_x, bomb_y + offset_y);
 					// Rotate the bomb around
 					context.rotate(Math.PI);
-					rock1.draw();
+					if (game.team1 == "r") {
+						rock1.draw();
+					} else if (game.team1 == "p") {
+						paper1.draw();
+					} else if (game.team1 == "s") {
+						scissor1.draw();
+					} else {
+						bomb.draw();
+					}
+
 					context.restore();
 					catapultArm.draw();
 					context.restore();
@@ -204,19 +277,55 @@
 					context.rotate(rads);
 					context.save();
 
-					rock2.draw();
+					if (game.team2 == "r") {
+						rock2.draw();
+					} else if (game.team2 == "p") {
+						paper2.draw();
+					} else if (game.team2 == "s") {
+						scissor2.draw();
+					} else {
+						bomb2.draw();
+					}					
 					context.restore();
 					catapultArm2.draw();
 					context.restore();
 					catapultBody2.draw();
 
 				},
+				drawTimer: function(percentage) {
+					
+				},
 				initialize: function() {
-					// var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
-					// var randomEmail = Math.floor(Math.random() * emails.length);
-					// var randomTeam = Math.floor(Math.random() * 2);
-	    // 			var me = new Player(md5(emails[randomEmail]), randomTeam);
-					// this.players.push(me);
+					for (var i = 0; i < 2; i++) {
+						var randomVote = Math.floor(Math.random() * 3 + 1);
+						var vote = "";
+						switch (randomVote) {
+							case 1:
+							vote = "r";
+							break;
+							case 2:
+							vote = "p";
+							break;
+							case 3:
+							vote = "s";
+							break;
+						}
+
+						if (i == 1) {
+							game.team1 = vote;
+						} else {
+							game.team2 = vote;
+						}
+					}
+
+
+					// for (var i = 0; i < 200; i++){
+					// 	var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
+					// 	var randomEmail = Math.floor(Math.random() * emails.length);
+					// 	var randomTeam = Math.floor(Math.random() * 2);
+		   //  			var me = new Player(md5(emails[randomEmail]), randomTeam);
+					// 	this.players.push(me);
+					// }
 					this.start();
 				}
 			};
@@ -302,7 +411,7 @@
 						context.restore();
 					}
 					// Draw feet
-					context.drawImage(feet.img, 0, this.height);
+					context.drawImage(feet.img, 7, this.height);
 
 					// Draw gravatar
 					context.drawImage(this.img, 0, 0, this.width, this.height);
@@ -321,35 +430,36 @@
 				this.x += this.vx;
 				this.y += this.vy;
 
-				// Make sure you you haven't gone past the boundaries
-				switch (this.team) {
-					case (BLUE_TEAM):
-					if (this.x < canvas_width/2 || this.x > canvas_width-this.width) {
-						this.vx = this.vx * -1;
-						this.x = Math.clamp(this.x,canvas_width/2,canvas_width-this.width);
-					}
-					if (this.y < canvas_height*.25 || this.y > canvas_height-this.height) {
-						this.vy = this.vy * -1;
-						this.y = Math.clamp(this.y,canvas_height*.25,canvas_height-this.height);
-					}
-					break;
+				if (!game.ended) {
+					// Make sure you you haven't gone past the boundaries
+					switch (this.team) {
+						case (BLUE_TEAM):
+						if (this.x < canvas_width/2 || this.x > canvas_width-this.width) {
+							this.vx = this.vx * -1;
+							this.x = Math.clamp(this.x,canvas_width/2,canvas_width-this.width);
+						}
+						if (this.y < canvas_height*.25 || this.y > canvas_height-this.height) {
+							this.vy = this.vy * -1;
+							this.y = Math.clamp(this.y,canvas_height*.25,canvas_height-this.height);
+						}
+						break;
 
-					case (RED_TEAM):
-					if (this.x < 0 || this.x > canvas_width/2-this.width) {
-						this.vx = this.vx * -1;
-						this.x = Math.clamp(this.x,0,canvas_width/2-this.width);
-					}
-					if (this.y < canvas_height*.25 || this.y > canvas_height-this.height) {
-						this.vy = this.vy * -1;
-						this.y = Math.clamp(this.y,canvas_height*.25,canvas_height-this.height);
-					}
-					break;
+						case (RED_TEAM):
+						if (this.x < 0 || this.x > canvas_width/2-this.width) {
+							this.vx = this.vx * -1;
+							this.x = Math.clamp(this.x,0,canvas_width/2-this.width);
+						}
+						if (this.y < canvas_height*.25 || this.y > canvas_height-this.height) {
+							this.vy = this.vy * -1;
+							this.y = Math.clamp(this.y,canvas_height*.25,canvas_height-this.height);
+						}
+						break;
 
-					default:
-					break;
+						default:
+						break;
+					}
 				}
 
-				// Detect edges and bouce players depending on team
 			}
 
 			Player.prototype.getShield = function(team) {
@@ -375,4 +485,31 @@
 		    $j(document).ready(function () {
 		    	$j('body').append(myCanvas);
 		    	game.initialize();
+		    	$j("#start").on("click", function () {
+					$j("#splash").fadeOut();
+					socket.emit('gameStart',true);
+					countDown(gameDuration,function(){ socket.emit('gameEnd', true); console.log("Game Ended"); });
+					game.running = true;
+				});
+				
+
 		    });
+
+	var countDown = function (counter, callback) {
+            var timer = setInterval(countItDown,1000);
+
+            // Decrement the displayed timer value on each 'tick'
+            function countItDown(){
+                counter -= 1;
+                console.log('time:'+counter+'\n');
+         
+                if( counter <= 0 ){
+                    console.log('Countdown Finished.');
+                    // Stop the timer and do the callback.
+                    clearInterval(timer);
+                    callback();
+                    return;
+                }
+            }
+
+    };
