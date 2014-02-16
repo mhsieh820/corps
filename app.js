@@ -1,5 +1,5 @@
 var express = require('express');
-var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame');
+var sendgrid  = require('sendgrid')('a', 'corpsgame');
 var routes = require('./routes');
 var http = require('http');
 var fs = require('fs');
@@ -347,8 +347,9 @@ app.post('/email', function (req, res) {
 
 	fs.readFile('template/email.html', function (err, html) {
     if (err) {
-        throw err; 
+        console.log(err) 
     }
+    else{
     	
     	sendgrid.send({
 		to: from,
@@ -360,12 +361,8 @@ app.post('/email', function (req, res) {
 	}, function(success, message) {
 		console.log(success);
 	});	
+    }
     
     });  	
 
-	
-	
-
-
 });
-
