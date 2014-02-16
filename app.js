@@ -313,14 +313,11 @@ io.sockets.on('connection', function (socket) {
   	//socket.emit('ready','Ready!');
 
   	//Server waits for client input
-  	socket.on('startGame', function(data){
+  	socket.on('gameStart', function() {
   		console.log('New Game Started');
     	gameEngine = socket.id;
     	console.log(gameEngine);
-    	game.startGame(data);
-
-    	//io.sockets.socket(gameEngine).emit('register', { register: 'yes' });
-
+    	game.startGame();
     });
 
 	socket.on('gameEnd', function(){
@@ -365,7 +362,8 @@ app.post('/email', function (req, res) {
   		
 	game.sendScore();
 	
-	fs.readFile('template/email.html', function (err, html) {
+	/*
+fs.readFile('template/email.html', function (err, html) {
     if (err) {
         throw err; 
     }
@@ -388,6 +386,7 @@ app.post('/email', function (req, res) {
 	});	
     
     });  	
+*/
 
 	
 	//}

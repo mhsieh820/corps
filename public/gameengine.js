@@ -1,62 +1,19 @@
 $j = jQuery.noConflict();
 
 var socket = io.connect('/');
-var users = {};
-var gameDuration = 600;
-
-window.onload = function() {
- 	
-
-    //console.log('Game engine')
-    socket.on('ready', function (data) {
-    	// var ready=confirm("Ready to play?");
-		// if (ready==true)
-		//   {
-		//   socket.emit('startGame',true);
-		//   countDown(gameDuration,function(){ socket.emit('gameEnd',{}) });
-		//   }
-		// else
-		//   {
-		//   alert("LOSER!");
-		//   }
-    	
-    });
-    
-}
+var gameDuration = 10;
 
 $j(document).ready(function () {
 	
 	$j("#start").on("click", function () {
 	
 		$j("#splash").fadeOut();
-		socket.emit('startGame',true);
-		countDown(gameDuration,function(){ socket.emit('gameEnd',{}) });
+		socket.emit('gameStart',true);
+		countDown(gameDuration,function(){ socket.emit('gameEnd', true) });
 	});
 	
 });
     
-    socket.on('emailReceived', function (data){
-    	console.log('email received');
-    	
-    });   
-    
-    socket.on('gameTime', function (value) {
-	    
-	    // 1 (start), -1 (end)
-	    
-    });
-    
-    socket.on('updateScore', function(response) { 
-	    $j("#scoreA").text(response.teamA);
-	    $j("#scoreB").text(response.teamB);
-	   //teamA, teamB 
-    });
-    
-
-	// socket.on('gameStart',function(gameDuration){
-	// 	//countDown(gameDuration,function(){ socket.emit('gameEnd',{}) });		
-	// });
-
 
 	var countDown = function (counter, callback) {
             var timer = setInterval(countItDown,1000);
@@ -76,20 +33,3 @@ $j(document).ready(function () {
             }
 
     };
-
-    // socket.on('sendPlayer', function (response) {
-	   //  // uid, timestamp, message, team
-	   //  console.log(response);
-	   //  if (response.team == 0)
-	   //  {
-		  //   //teamA
-		  //   $j("#teamA").append("<div>" + response.uid + " " + response.timestamp + " Message:  " + response.message + "</div>");
-	   //  }
-	   //  else
-	   //  {
-		  //   //teamB
-		  //   $j("#teamB").append("<div>" + response.uid + " " + response.timestamp + " Message:  " + response.message + "</div>");
-	   //  }
-    // });
-
- 

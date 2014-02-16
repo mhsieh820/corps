@@ -1640,7 +1640,7 @@ select {
   overflow: hidden;
   color: #444;
   position: absolute;
-  top: 20px;
+  top: 50px;
   left: 50%;
   margin-left: -475px;
 }

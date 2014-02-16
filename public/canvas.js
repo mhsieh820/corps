@@ -36,6 +36,8 @@
 			
 			var rateOfChange = 1000 / 3000;
 			var rateOfFinalChange = 2000 / 3000;
+			
+			var percentage = 1;
 			/**
 			 * Clamps a number. Based on Zevan's idea: http://actionsnippet.com/?p=475
 			 * params: val, min, max
@@ -112,6 +114,7 @@
 				currentAngle2: startAngle2,
 				team1: "",
 				team2: "",
+				running: false,
 				start: function() {
 
 					// Start code here
@@ -135,7 +138,8 @@
 			        context.clearRect(0, 0, myCanvas.width, myCanvas.height);
 			        bgSprite.draw();
 
-					if (game.currentAngle > endAngle)
+					
+					if (game.currentAngle > endAngle && game.running)
 					{
 						//console.log(game.time);
 						angle = game.currentAngle - rateOfChange;
@@ -144,13 +148,23 @@
 					
 					game.drawCatapult(angle);
 					
-					if (game.currentAngle2 < endAngle2)
+					if (game.currentAngle2 < endAngle2 && game.running)
 					{
 						//console.log(game.time);
 						angle2 = game.currentAngle2 + rateOfChange;
 						game.currentAngle2 = angle2;
 					}
 					game.drawCatapult2(angle2);
+
+					//timer
+					
+					if (game.running)
+					{
+						//change percentage
+					}
+					
+					game.drawTimer(percentage);
+
 
 					this.players.forEach(function(player) {
 						//console.log(player);
@@ -234,6 +248,9 @@
 					context.restore();
 					catapultBody2.draw();
 
+				},
+				drawTimer: function(percentage) {
+					
 				},
 				initialize: function() {
 					// var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
