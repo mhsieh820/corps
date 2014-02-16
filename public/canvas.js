@@ -100,10 +100,20 @@
 		    	var totalA = data.statA.r + data.statA.p + data.statA.s;
 		    	var totalB = data.statB.r + data.statB.p + data.statB.s;
 		    	
+		    	var html = "";
+		    	$j.each(data.statA, function (key, value) {
+			    	
+			    	html += "<div class='large-2 columns'><span class='count'>" + value + "</span></div>";
+			    	
+		    	});
+		    	
+		    	$j.each(data.statB, function (key, value) {
+			    	
+			    	html += "<div class='large-2 columns'><span class='count'>" + value + "</span></div>";
+		    	});
 		    	
 		    	
-		    	
-		    	$j("#text").html("<h1>" + data.winner + "</h1><p>" + html + "</p>");
+		    	$j("#text").html("<h1>" + data.winner + "</h1><div class='row' >" + html + "</div>");
 		    	$j("#splash").delay( 2000 ).fadeIn();
 		    	game.ended = true;
 		    });

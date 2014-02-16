@@ -61,6 +61,17 @@ a{
 	width: 650px;
 	padding-left: 20px;
 	letter-spacing: -2px;
+	
+	h1 {
+		font-size: 60px;
+		text-align: center;
+	}
+	
+	.count {
+		font-size: 30px;
+		display: block;
+		text-align: center
+	}
 }
 
 p {
