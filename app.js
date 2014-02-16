@@ -41,7 +41,7 @@ app.get('/', routes.index());
 app.get('/client', routes.client());
 
 var count = 0;
-var game = new Game();;
+var game = new Game();
 var gameEngine;
 var gameDuration = 180;
 var gameOn = true;
@@ -205,9 +205,9 @@ function Game() {
 		var timestamp = new Date().getTime();	
 		
 		//player is the Player object
-		var response = { uid: player.uid, timestamp: timestamp, message: message, team: player.team };
+		var response = { uid: player.uid, timestamp: timestamp, message: message, team: player.team, choice: player.choice};
 		
-			
+		console.log(response);	
 		io.sockets.in(gameEngine).emit('sendPlayer',  response);
 	
 	};
@@ -216,20 +216,23 @@ function Game() {
 		if(teamChoice != null){
 			var a=teamChoice.teamA;
 			var b=teamChoice.teamB;
+			var winner;
 			if(a == 'r' && b =='s')
-				return 'Team A';
+				winner='Team A';
 			else if(a == 's' && b == 'p')
-				return 'Team A';
+				winner='Team A';
 			else if(a == 'p' && b == 'r')
-				return 'Team A';
+				winner='Team A';
 			else if(b == 'r' && a =='s')
-				return 'Team B';
+				winner='Team B';
 			else if(b == 's' && a == 'p')
-				return 'Team B';
+				winner='Team B';
 			else if(b == 'p' && a == 'r')
-				return 'Team B';
+				winner='Team B';
 			else
-				return 'TIE!';
+				winner='TIE!';
+			socket.emit('sendWinner',winner);
+			return winner;
 
 
 		}
@@ -309,7 +312,8 @@ io.sockets.on('connection', function (socket) {
   	
 
   	socket.on('newEmail',function (data) {
-  		
+  		console.log("New Email received");
+  		console.log(data);
   		var player = game.updatePlayer(data);
 	  		
 	  	game.sendPlayer(player, data.msg);
@@ -324,7 +328,7 @@ io.sockets.on('connection', function (socket) {
 // The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
 app.post('/email', function (req, res) {
 
-	//while(gameOn){
+	//while(ga){
 	
 	if(potentialFrom = req.body.from.match(/<(.+)>/)){
 		var from = potentialFrom[1];
