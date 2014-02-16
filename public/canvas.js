@@ -2,13 +2,22 @@
 			var canvas_height = window.innerHeight;
 			var blueTeamShield = new Sprite('shield.svg', -10, 10, 20, 30);
 			var redTeamShield = new Sprite('redShield.svg', 30, 10, 20, 30);
-			var messageBox = new Sprite('commentBox.svg', 0, 0, 80, 40);
+			var messageBox = new Sprite('commentBox.svg', 0, 0, 160, 80);
 			var bgSprite = new Sprite('bg.svg', 0, 0, canvas_width, canvas_height);
+			var catapultBody = new Sprite('catapultBody.svg', 200, 200, 124, 72);
+			var catapultArm = new Sprite('catapultArm.svg', 0 , 0, 168, 23);
+			
+			var catapultBody2 = new Sprite('catapultBody_rev.svg', 900, 200, 124, 72);
+			var catapultArm2 = new Sprite('catapultArm_rev.svg', 0 , 0, 168, 23);
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
 			var RED_TEAM = 1;
 			var MESSAGE_DECAY = 1000;
-
+			var startAngle = 260;
+			var endAngle = 180;
+			var finalAngle = 280;
+			var rateOfChange = 1000 / 3000;
+			var rateOfFinalChange = 2000 / 3000;
 			/**
 			 * Clamps a number. Based on Zevan's idea: http://actionsnippet.com/?p=475
 			 * params: val, min, max
@@ -76,12 +85,21 @@
 				time: 0,
 				fps: 30,
 				players: [],
+				currentAngle: startAngle,
 				start: function() {
 
 					// Start code here
 					this.interval = setInterval(function() {
 						game.update();
 						game.draw();
+						if (game.currentAngle > endAngle)
+						{
+							//console.log(game.time);
+							angle = game.currentAngle - rateOfChange;
+							game.currentAngle = angle;
+						}
+						
+						game.drawCatapult(angle);
 					}, 1000/this.fps);
 				},
 				stop: function() {
@@ -112,6 +130,19 @@
 					// }
 
 
+				},
+				drawCatapult: function (angle) {
+					
+					
+					
+					context.save();
+					context.translate(283,250);
+					var rads = angle * (Math.PI / 180);
+					context.rotate(rads);
+					catapultArm.draw();
+					context.restore();
+					catapultBody.draw();
+					
 				},
 				initialize: function() {
 					// var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
@@ -185,11 +216,13 @@
 
 			Player.prototype.draw = function() {
 				//console.log("DRAW MOTHERUFKCER");
-				if (this.gLoaded)
+				if (this.gLoaded) {
+					context.drawImage(messageBox.img, (-messageBox.width/2)+(this.width/2), -messageBox.height-10, messageBox.width, messageBox.height);
 					context.drawImage(this.img, 0, 0, this.width, this.height);
 					this.shield.draw();
-					context.drawImage(messageBox.img, 0, -50, messageBox.width, messageBox.height);
-					context.fillText(this.message, 0, -50);
+					context.fillStyle = 'white';
+					context.fillText(this.message, -10, -messageBox.height/2);
+				}
 
 			};
 

@@ -10,15 +10,17 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var md5 = require("./md5.min.js");
 //var game = require("./gamecenter.js");
-io.set("log level", 1);
-server.listen(process.env.PORT || 3000);
+
+
+server.listen(process.env.PORT || 80);
+
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(express.favicon());
-//app.use(express.bodyParser());
+app.use(express.bodyParser());
 
 //app.use(express.logger('dev'));
 
@@ -42,17 +44,16 @@ var gameEngine;
 var gameDuration = 180;
 
 // The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
-app.post('/email', express.multipart({defer: true, uploadDir: 'temp' }) , function (req, res) {
+app.post('/email', function (req, res) {
 
-	// SendGrid gives us a lot of information, however, here we only need the person's email (to make sure they don't vote twice) and the subject which serves as their vote.
-	// Note: Make sure you configure your app to use Express' Body Parse by doing: app.use(express.bodyParser());
-	console.log("GOT EMAIL");
+
+	
 	if(potentialFrom = req.body.from.match(/<(.+)>/)){
 		var from = potentialFrom[1];
 	}else{
 		var from = req.body.from;
 	}
-	
+		
 	var data = {
 		'email' : from,
 		'choice': req.body.subject,
@@ -65,7 +66,7 @@ app.post('/email', express.multipart({defer: true, uploadDir: 'temp' }) , functi
   		
 	game.sendScore();
 	
-	// Finally, I want to thank everyone who voted, luckily SendGrid also will send email for me. I just need to tell it what to send.
+
 	sendgrid.send({
 		to: from,
 		from: 'game@corpsgame.com',
@@ -77,10 +78,10 @@ app.post('/email', express.multipart({defer: true, uploadDir: 'temp' }) , functi
 				'Corpsgame'
 	}, function(success, message) {
 	
-		if(!success) throw new Error(message);
 	});
 
 });
+
 
 
 function Game() {
@@ -94,14 +95,14 @@ function Game() {
 
 	Game.prototype.updatePlayer = function(data) {
 		var hash = md5.md5(data.email);
-		console.log('hash'+hash);
+		
 		//if player exists, update score and send player to client
 		for(var i=0;i< this.players.length;i++){
-			console.log(this.players[i].uid);
+			
 			if( hash == this.players[i].uid){
-				console.log('play at position'+i);
+				
 				var oldChoice = this.players[i].choice;
-				console.log(oldChoice);
+				
 				var newChoice = this.players[i].updateChoice(data.choice);
 				if(newChoice != null){
 					this.updateScore(oldChoice, newChoice, this.players[i].team);
@@ -115,7 +116,7 @@ function Game() {
 
 		//if player doesn't exist, create new player	
 		if(i == this.players.length){
-			console.log('Creating new player');
+			
 			count++;
 			this.players[i] = new Player(hash, data.email,data.choice);
 			this.players[i].setTeam();
@@ -307,8 +308,29 @@ function Game() {
 		{
 			this.team = 1; //TEAM B
 		}
-		console.log('player assigned team:'+this.team);
+
 	};
+
+
+  	
+  //	console.log('emited ready');  	
+  
+  	//New Email Recieved
+
+  	
+
+    
+     //SOCKETS THAT COME IN FROM EMAIL
+   
+    
+    //email
+    
+    //game ends
+    
+    
+
+	//game engine
+	
 	
 	
 	
@@ -318,7 +340,7 @@ function Game() {
 
 io.sockets.on('connection', function (socket) {
   	
-  	game = new Game();
+  	game = new Gae();
   	console.log('New Game Started');
   	//connect game
   	socket.emit('ready','Ready!');
@@ -334,6 +356,16 @@ socket.on('gameEnd', function(){
 	console.log('This shit is done yo!');
 })
   	
+
+  	socket.on('newEmail',function (data) {
+  		
+  		var player = game.updatePlayer(data);
+	  		
+	  	game.sendPlayer(player, data.msg);
+  		
+	  	game.sendScore();
+	  	
+    });
  
 
 });
