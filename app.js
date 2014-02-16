@@ -42,7 +42,7 @@ app.post('/email', function (req, res) {
 
 	// SendGrid gives us a lot of information, however, here we only need the person's email (to make sure they don't vote twice) and the subject which serves as their vote.
 	// Note: Make sure you configure your app to use Express' Body Parse by doing: app.use(express.bodyParser());
-	
+	console.log("GOT EMAIL");
 	if(potentialFrom = req.body.from.match(/<(.+)>/)){
 		var from = potentialFrom[1];
 	}else{
