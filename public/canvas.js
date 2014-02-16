@@ -1,3 +1,8 @@
+		    $j = jQuery.noConflict();
+
+			var socket = io.connect('/');
+			var gameDuration = 600;
+
 			var canvas_width = window.innerWidth;
 			var canvas_height = window.innerHeight;
 			var blueTeamShield = new Sprite('shield.svg', -10, 10, 20, 30);
@@ -21,6 +26,8 @@
 			var rock2 = new Sprite('image/bomb-rock.svg', 55, -168, 142, 179);
 			var paper2 = new Sprite('image/bomb-paper.svg', 55, -168, 142, 179);
 			var scissor2 = new Sprite('image/bomb-scissors.svg', 55, -168, 142, 179);
+
+			var logo = new Sprite('image/logo.png', 0, 0, 348, 206);
 			
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
@@ -137,7 +144,11 @@
 					// Draw everything on screen
 			        context.clearRect(0, 0, myCanvas.width, myCanvas.height);
 			        bgSprite.draw();
-
+			        context.save();
+			        context.translate(myCanvas.width/2-(348/2), 50);
+		        	logo.draw();
+			        context.restore();
+					
 					
 					if (game.currentAngle > endAngle && game.running)
 					{
@@ -146,7 +157,7 @@
 						game.currentAngle = angle;
 					}
 					
-					game.drawCatapult(angle);
+					game.drawCatapult(game.currentAngle);
 					
 					if (game.currentAngle2 < endAngle2 && game.running)
 					{
@@ -154,7 +165,7 @@
 						angle2 = game.currentAngle2 + rateOfChange;
 						game.currentAngle2 = angle2;
 					}
-					game.drawCatapult2(angle2);
+					game.drawCatapult2(game.currentAngle2);
 
 					//timer
 					
@@ -414,6 +425,36 @@
 
 	    	// Run this when the page loads
 		    $j(document).ready(function () {
+		    	$j("#start").on("click", function () {
+					$j("#splash").fadeOut();
+					socket.emit('gameStart',true);
+					countDown(gameDuration,function(){ socket.emit('gameEnd', true) });
+					game.running = true;
+				});
+				
 		    	$j('body').append(myCanvas);
 		    	game.initialize();
 		    });
+
+
+
+
+
+	var countDown = function (counter, callback) {
+            var timer = setInterval(countItDown,1000);
+
+            // Decrement the displayed timer value on each 'tick'
+            function countItDown(){
+                counter -= 1;
+                console.log('time:'+counter+'\n');
+         
+                if( counter <= 0 ){
+                    console.log('Countdown Finished.');
+                    // Stop the timer and do the callback.
+                    clearInterval(timer);
+                    callback();
+                    return;
+                }
+            }
+
+    };

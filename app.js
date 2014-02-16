@@ -25,7 +25,7 @@ app.use(express.bodyParser());
 
 //app.use(express.logger('dev'));
 
-app.use(express.json());
+//app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
@@ -344,6 +344,28 @@ app.post('/email', function (req, res) {
   		
 	game.sendScore();
 	
+
+	fs.readFile('template/email.html', function (err, html) {
+    if (err) {
+        throw err; 
+    }
+    	
+    	sendgrid.send({
+		to: from,
+		replyTo: 'email@corpsgame.bymail.in',
+		from: 'game@corpsgame.com',
+		fromname: 'coRPS Game',
+		subject: 'Welcome to coRPS!',
+		html: html
+	}, function(success, message) {
+		console.log(success);
+	});	
+    
+    });  	
+
+	
+	
+
 
 });
 

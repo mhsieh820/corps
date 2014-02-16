@@ -1,18 +1,9 @@
-// window.onload = function() {
-// console.log('TestUser.js');
-// $('#join').click(function(){
-// 	console.log('Join Clicd');
-
-// 	socket.emit('newEmail',{email:$('#email').val(),choice:$('#choice').val(),msg:$('#msg').val()});
-// 	});
-// }
-
+$j = jQuery.noConflict();
 var socket = io.connect('/');
-window.onload = function(){
+$j(document).ready(function () {
 
-$('#join').click(function(){
-	console.log('Join Clicked');
-	socket.emit('newEmail',{email:$('#email').val(),choice:$('#choice').val(),msg:$('#msg').val()});
+$j('#join').click(function(){
+	socket.emit('newEmail',{email:$j('#email').val(),choice:$j('#choice').val(),msg:$j('#msg').val()});
 	});
 
-}
+});
