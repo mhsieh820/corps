@@ -1721,47 +1721,6 @@ p span {
   line-height: 31px;
 }
 
-/* line 115, ../scss/_main.scss */
-[data-pie-id] li:nth-child(0) {
-  color: blue;
-}
-
-/* line 115, ../scss/_main.scss */
-[data-pie-id] li:nth-child(1) {
-  color: #4d00ff;
-}
-
-/* line 115, ../scss/_main.scss */
-[data-pie-id] li:nth-child(2) {
-  color: #9900ff;
-}
-
-/* line 115, ../scss/_main.scss */
-[data-pie-id] li:nth-child(3) {
-  color: #e500ff;
-}
-
-/* line 115, ../scss/_main.scss */
-[data-pie-id] li:nth-child(4) {
-  color: #ff00cc;
-}
-
-/* line 115, ../scss/_main.scss */
-[data-pie-id] li:nth-child(5) {
-  color: #ff0080;
-}
-
-/* line 115, ../scss/_main.scss */
-[data-pie-id] li:nth-child(6) {
-  color: #ff0033;
-}
-
-/* line 126, ../scss/_main.scss */
-ul[data-pie-id] {
-  list-style: none;
-  padding: 10px;
-}
-
 @font-face {
   font-family: 'Franklin Gothic';
   src: url("frabk-webfont.eot");
