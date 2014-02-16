@@ -95,25 +95,46 @@
 		    	// Team A, Team B, TIE!
 		    	console.log("Winner: " + data);
 		    	game.finishAnimation(data.winner);
-		    	
+
 		    	//totals
 		    	var totalA = data.statA.r + data.statA.p + data.statA.s;
 		    	var totalB = data.statB.r + data.statB.p + data.statB.s;
-		    	
+		    	console.log(totalA);
+		    	console.log(totalB);
+
 		    	var html = "";
 		    	$j.each(data.statA, function (key, value) {
-			    	
-		    		html+= "<div class='chart' data-percent='"+value/totalA*100+"''>"+value/totalA*100+"</div>"
+		    		console.log("Key: " + key + " Value: " + value);
+
+		    		html+= "<div class='chartContainer' style='float:left'><div class='chart percentage easyPieChart' data-percent='"+value/totalA*100+"' style='width: 110px; height: 110px; line-height: 110px;'><span>"+Math.floor(value/totalA*100)+"</span>%</div>";
+		    		if (key == "r") {
+		    			html += "<div class='label'>Rock</div></div>";
+		    		} else if (key == "p") {
+		    			html += "<div class='label'>Paper</div></div>";
+		    		} else {
+		    			html += "<div class='label'>Scissors</div></div>";
+		    		}
 			    	//html += "<div class='large-2 columns'><span class='count'>" + value + "</span></div>";
-			    	
 		    	});
-		    	
+		    		html += "<span class=''>RED</span>";
+
+
 		    	$j.each(data.statB, function (key, value) {
-			    	
-			    	html += "<div class='large-2 columns'><span class='count'>" + value + "</span></div>";
+		    		if (key == "r")
+			    		html+= "<div class='chartContainer' style='float:left; clear:both'><div class='chart percentage easyPieChart' data-percent='"+value/totalB*100+"' style='width: 110px; height: 110px; line-height: 110px;'><span>"+Math.floor(value/totalB*100)+"</span>%</div>";
+			    	else
+				    	html+= "<div class='chartContainer' style='float:left'><div class='chart percentage easyPieChart' data-percent='"+value/totalB*100+"' style='width: 110px; height: 110px; line-height: 110px;'><span>"+Math.floor(value/totalB*100)+"</span>%</div>";
+		    		if (key == "r") {
+		    			html += "<div class='label'>Rock</div></div>";
+		    		} else if (key == "p") {
+		    			html += "<div class='label'>Paper</div></div>";
+		    		} else {
+		    			html += "<div class='label'>Scissors</div></div>";
+		    		}
 		    	});
-		    	
-		    	
+
+		    		html += "<span class=''>BLUE</span>";
+
 		    	$j("#text").html("<h1>" + data.winner + "</h1><div class='row' >" + html + "</div>");
 
 			    $j('.chart').easyPieChart({

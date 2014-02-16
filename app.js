@@ -54,8 +54,8 @@ function Game() {
 		
 		//list of players
 		this.players = [];
-		this.scoreA = {r:"0",p:"0",s:"0"};
-		this.scoreB = {r:"0",p:"0",s:"0"};
+		this.scoreA = {r:0,p:0,s:0};
+		this.scoreB = {r:0,p:0,s:0};
 		//this.countDown(startTime,function(){console.log("lalala")});
 	}
 
@@ -122,6 +122,12 @@ function Game() {
 			case 's': score.s++;
 						break;
 			default: break;
+		}
+
+		if (team == 1) {
+			this.scoreA = score;
+		} else {
+			this.scoreB = score;
 		}
 
 	}
