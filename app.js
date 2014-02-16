@@ -1,5 +1,5 @@
 var express = require('express');
-var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame');
+var sendgrid  = require('sendgrid')('a', 'corpsgame');
 var routes = require('./routes');
 var http = require('http');
 var fs = require('fs');
@@ -183,7 +183,9 @@ function Game() {
 			//team = 0,1 choice = r,p,s
 			var response = { teamA: teamA, teamB: teamB };
 			teamChoice=response;
-			io.sockets.in(gameEngine).emit('updateScore', response);
+			//io.sockets.in(gameEngine).emit('updateScore', response);
+			io.sockets.socket(gameEngine).emit('updateScore',response);
+	
 			
 		}
 	
@@ -207,8 +209,8 @@ function Game() {
 		//player is the Player object
 		var response = { uid: player.uid, timestamp: timestamp, message: message, team: player.team, choice: player.choice};
 		
-		console.log(response);	
-		io.sockets.in(gameEngine).emit('sendPlayer',  response);
+
+		io.sockets.socket(gameEngine).emit('sendPlayer',response);
 	
 	};
 
@@ -352,8 +354,9 @@ app.post('/email', function (req, res) {
 
 	fs.readFile('template/email.html', function (err, html) {
     if (err) {
-        throw err; 
+        console.log(err) 
     }
+    else{
     	
     	sendgrid.send({
 		to: from,
@@ -365,8 +368,8 @@ app.post('/email', function (req, res) {
 	}, function(success, message) {
 		console.log(success);
 	});	
+    }
     
     });  	
 
 });
-
