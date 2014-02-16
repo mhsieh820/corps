@@ -94,8 +94,11 @@
 		    });
 
 		    socket.on('updateScore', function(response) {
-			    $j("#scoreA").text(response.teamA);
-			    $j("#scoreB").text(response.teamB);
+			    // $j("#scoreA").text(response.teamA);
+			    // $j("#scoreB").text(response.teamB);
+			    game.team1 = response.teamA;
+			    game.team2 = response.teamB;
+			    console.log("[SCORE] Team1: " + response.teamA + " Team2: " + response.teamB);
 			   //teamA, teamB
 		    });
 
