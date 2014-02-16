@@ -60,6 +60,21 @@ app.post('/email', function (req, res) {
 	game.sendPlayer(player, data.msg);
   		
 	game.sendScore();
+	
+	// Finally, I want to thank everyone who voted, luckily SendGrid also will send email for me. I just need to tell it what to send.
+	sendgrid.send({
+		to: from,
+		from: 'game@corpsgame.com',
+		fromname: 'CMU Team',
+		subject: 'Response',
+		text:	'Hi!\n' +
+				'Yay\n' +
+				'--\n' +
+				'Corpsgame'
+	}, function(success, message) {
+	
+		if(!success) throw new Error(message);
+	});
 
 });
 
