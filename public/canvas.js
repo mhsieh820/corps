@@ -90,22 +90,31 @@
 				// alert(data);
 		    });
 
-		    socket.on('emailReceived', function (data){
-		    	console.log('email received');
-		    	//alert(data);
-		    });
 
-		    socket.on('gameTime', function (value) {
-
-			    // 1 (start), -1 (end)
-
-
-		    });
-
-		    socket.on('sendWinner' , function (data) {
+		    socket.on('sendWinner' , function (data) 			{
 		    	// Team A, Team B, TIE!
 		    	console.log("Winner: " + data);
-		    	game.finishAnimation(data);
+		    	game.finishAnimation(data.winner);
+		    	
+		    	//totals
+		    	var totalA = data.statA.r + data.statA.p + data.statA.s;
+		    	var totalB = data.statB.r + data.statB.p + data.statB.s;
+		    	
+		    	var html = "";
+		    	$j.each(data.statA, function (key, value) {
+			    	
+			    	html += "<div class='large-2 columns'><span class='count'>" + value + "</span></div>";
+			    	
+		    	});
+		    	
+		    	$j.each(data.statB, function (key, value) {
+			    	
+			    	html += "<div class='large-2 columns'><span class='count'>" + value + "</span></div>";
+		    	});
+		    	
+		    	
+		    	$j("#text").html("<h1>" + data.winner + "</h1><div class='row' >" + html + "</div>");
+		    	$j("#splash").delay( 2000 ).fadeIn();
 		    	game.ended = true;
 		    });
 
@@ -150,12 +159,12 @@
 				},
 				finishAnimation: function(winner) {
 					// Team A, Team B, TIE!
-					if (winner == "Team A") {
+					if (winner == "Team Red Wins!") {
 						this.players.forEach(function(player) {
 							//console.log(player);
 							player.vx = 15;
 						});
-					} else if (winner == "Team B") {
+					} else if (winner == "Team Blue Wins!") {
 						this.players.forEach(function(player) {
 							//console.log(player);
 							player.vx = -15;
@@ -570,9 +579,11 @@
 					countDown(gameDuration,function(){ socket.emit('gameEnd', true); console.log("Game Ended"); });
 					game.running = true;
 				});
-				
 
 		    });
+		    
+		   
+
 
 	var countDown = function (counter, callback) {
             var timer = setInterval(countItDown,1000);

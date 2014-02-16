@@ -1687,8 +1687,19 @@ a {
   padding-left: 20px;
   letter-spacing: -2px;
 }
+/* line 65, ../scss/_main.scss */
+#text h1 {
+  font-size: 60px;
+  text-align: center;
+}
+/* line 70, ../scss/_main.scss */
+#text .count {
+  font-size: 30px;
+  display: block;
+  text-align: center;
+}
 
-/* line 66, ../scss/_main.scss */
+/* line 77, ../scss/_main.scss */
 p {
   font-size: 48px;
   line-height: 44px;
@@ -1696,17 +1707,17 @@ p {
   text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.4);
 }
 
-/* line 73, ../scss/_main.scss */
+/* line 84, ../scss/_main.scss */
 p:hover {
   color: #000;
 }
 
-/* line 77, ../scss/_main.scss */
+/* line 88, ../scss/_main.scss */
 p:not(:first-of-type) {
   margin-top: 15px;
 }
 
-/* line 82, ../scss/_main.scss */
+/* line 93, ../scss/_main.scss */
 p span {
   font-weight: bold;
   font-size: 55px;
@@ -1714,7 +1725,7 @@ p span {
   display: block;
 }
 
-/* line 89, ../scss/_main.scss */
+/* line 100, ../scss/_main.scss */
 .footnote {
   font-size: 28px;
   letter-spacing: 0px;
