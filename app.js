@@ -2,6 +2,7 @@ var express = require('express');
 var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame');
 var routes = require('./routes');
 var http = require('http');
+var fs = require('fs');
 var path = require('path');
 
 var app = express();
@@ -44,45 +45,6 @@ var gameEngine;
 var gameDuration = 180;
 var gameOn=false;
 
-// The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
-app.post('/email', function (req, res) {
-
-	while(gameOn){
-	
-	if(potentialFrom = req.body.from.match(/<(.+)>/)){
-		var from = potentialFrom[1];
-	}else{
-		var from = req.body.from;
-	}
-		
-	var data = {
-		'email' : from,
-		'choice': req.body.subject,
-		'msg' : req.body.text
-	};
-	
-	var player = game.updatePlayer(data);
-	  		
-	game.sendPlayer(player, data.msg);
-  		
-	game.sendScore();
-	
-
-	sendgrid.send({
-		to: from,
-		from: 'game@corpsgame.com',
-		fromname: 'CMU Team',
-		subject: 'Response',
-		text:	'Hi!\n' +
-				'Yay\n' +
-				'--\n' +
-				'Corpsgame'
-	}, function(success, message) {
-	
-	});
-	}
-
-});
 
 
 
@@ -379,3 +341,54 @@ socket.on('gameEnd', function(){
  
 
 });
+
+// The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
+app.post('/email', function (req, res) {
+
+	//while(gameOn){
+	
+	if(potentialFrom = req.body.from.match(/<(.+)>/)){
+		var from = potentialFrom[1];
+	}else{
+		var from = req.body.from;
+	}
+		
+	var data = {
+		'email' : from,
+		'choice': req.body.subject,
+		'msg' : req.body.text
+	};
+	
+	var player = game.updatePlayer(data);
+	  		
+	game.sendPlayer(player, data.msg);
+  		
+	game.sendScore();
+	
+	fs.readFile('template/email.html', function (err, html) {
+    if (err) {
+        throw err; 
+    }
+    	
+    	sendgrid.send({
+		to: from,
+		from: 'game@corpsgame.com',
+		fromname: 'coRPS Game',
+		subject: 'Welcome to coRPS!',
+		html: html,
+		headers: {
+			'MIME-Version' : "1.0",
+			'Content-Type': "text/html; charset=ISO-8859-1"
+
+		}
+	}, function(success, message) {
+	
+	});	
+    
+    });  	
+
+	
+	//}
+
+});
+

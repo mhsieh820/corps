@@ -2,7 +2,7 @@ $j = jQuery.noConflict();
 
 var socket = io.connect('/');
 var users = {};
-var gameDuration=60;
+var gameDuration= 600;
 
 window.onload = function() {
  	
