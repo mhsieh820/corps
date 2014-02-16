@@ -4,6 +4,8 @@
 			var redTeamShield = new Sprite('redShield.svg', 30, 10, 20, 30);
 			var messageBox = new Sprite('commentBox.svg', 0, 0, 160, 80);
 			var bgSprite = new Sprite('bg.svg', 0, 0, canvas_width, canvas_height);
+			var catapultBody = new Sprite('catapultBody.svg', 0, 0, 50, 30);
+			var catapultArm = new Sprite('catapultArm.svg', 0 ,0, 50, 30);
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
 			var RED_TEAM = 1;
@@ -112,6 +114,13 @@
 					// }
 
 
+				},
+				drawCatapult: function () {
+					context.save();
+					
+					
+					
+					context.restore();
 				},
 				initialize: function() {
 					// var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];

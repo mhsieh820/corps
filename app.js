@@ -10,7 +10,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var md5 = require("./md5.min.js");
 //var game = require("./gamecenter.js");
-io.set("log level", 1);
+
 server.listen(process.env.PORT || 80);
 // all environments
 app.set('port', process.env.PORT || 80);
@@ -87,7 +87,6 @@ io.sockets.on('connection', function (socket) {
   	//socket.emit('ready','Ready!');
   	socket.on('gameEngine', function(data){
     	gameEngine = socket.id;
-    	console.log(gameEngine);
     	io.sockets.socket(gameEngine).emit('register', { register: 'yes' });
     });
 
@@ -97,7 +96,6 @@ io.sockets.on('connection', function (socket) {
   	//New Email Recieved
 
   	socket.on('newEmail',function (data) {
-  		console.log('email received'+data.email+data.msg+data.choice);
   		
   		var player = game.updatePlayer(data);
 	  		
@@ -129,14 +127,14 @@ io.sockets.on('connection', function (socket) {
 
 	Game.prototype.updatePlayer = function(data) {
 		var hash = md5.md5(data.email);
-		console.log('hash'+hash);
+		
 		//if player exists, update score and send player to client
 		for(var i=0;i< this.players.length;i++){
-			console.log(this.players[i].uid);
+			
 			if( hash == this.players[i].uid){
-				console.log('play at position'+i);
+				
 				var oldChoice = this.players[i].choice;
-				console.log(oldChoice);
+				
 				var newChoice = this.players[i].updateChoice(data.choice);
 				if(newChoice != null){
 					this.updateScore(oldChoice, newChoice, this.players[i].team);
@@ -150,7 +148,7 @@ io.sockets.on('connection', function (socket) {
 
 		//if player doesn't exist, create new player	
 		if(i == this.players.length){
-			console.log('Creating new player');
+			
 			count++;
 			this.players[i] = new Player(hash, data.email,data.choice);
 			this.players[i].setTeam();
@@ -336,7 +334,7 @@ io.sockets.on('connection', function (socket) {
 		{
 			this.team = 1; //TEAM B
 		}
-		console.log('player assigned team:'+this.team);
+
 	};
 	
 	
