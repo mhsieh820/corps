@@ -9,16 +9,16 @@ window.onload = function() {
 
     //console.log('Game engine')
     socket.on('ready', function (data) {
-    	var ready=confirm("Ready to play?");
-		if (ready==true)
-		  {
-		  socket.emit('startGame',true);
-		  countDown(gameDuration,function(){ socket.emit('gameEnd',{}) });
-		  }
-		else
-		  {
-		  alert("LOSER!");
-		  }
+    	// var ready=confirm("Ready to play?");
+		// if (ready==true)
+		//   {
+		//   socket.emit('startGame',true);
+		//   countDown(gameDuration,function(){ socket.emit('gameEnd',{}) });
+		//   }
+		// else
+		//   {
+		//   alert("LOSER!");
+		//   }
     	
     });
     

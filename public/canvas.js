@@ -11,9 +11,13 @@
 			var catapultBody2 = new Sprite('image/catapultBody_rev.svg', .70 * canvas_width, 300, 124, 72);
 			var catapultArm2 = new Sprite('image/catapultArm_rev.svg', 0 , 0, 168, 23);
 			
-			var rock = new Sprite('image/bomb-rock.svg', 0, 0, 142, 179);
-			var paper = new Sprite('image/bomb-rock.svg', 0, 0, 142, 179);
-			var scissor = new Sprite('image/bomb-rock.svg', 0, 0, 142, 179);
+			var rock1 = new Sprite('image/bomb-rock.svg', -200, -190, 142, 179);
+			var paper1 = new Sprite('image/bomb-rock.svg', -200, -190, 142, 179);
+			var scissor1 = new Sprite('image/bomb-rock.svg', -200, -190, 142, 179);
+			
+			var rock2 = new Sprite('image/bomb-rock.svg', 55, -168, 142, 179);
+			var paper2 = new Sprite('image/bomb-rock.svg', 0, 0, 142, 179);
+			var scissor2 = new Sprite('image/bomb-rock.svg', 0, 0, 142, 179);
 			
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
@@ -71,7 +75,7 @@
 
 	        socket.on('ready', function (data) {
 		    	socket.emit('gameEngine', "send")
-				alert(data);
+				// alert(data);
 		    });
 
 		    socket.on('emailReceived', function (data){
@@ -156,47 +160,52 @@
 				drawCatapult: function (angle) {
 				
 					context.save();
+					// Move to origin point
 					context.translate(.20 * canvas_width + 80,350);
+
+					// Rotate into angle state
 					var rads = angle * (Math.PI / 180);
 					context.rotate(rads);
 					context.save();
-					context.translate(.20 * canvas_width + 80,350);
-					
-					
-					
-					
-					offset_x = -168;
-					offset_y = -160;
-					
+					// Start rock translation
+
+					// context.translate(.20 * canvas_width + 80,350);
+
+					// offset_x = -168;
+					// offset_y = -160;
+
 					bomb_x = 0;
 					bomb_y = 0;
 					//bomb_x = Math.cos((angle) * (Math.PI / 180)) * 128;
 					//bomb_y = Math.sin((angle) * (Math.PI / 180)) * 128;
-				
-					context.translate(bomb_x + offset_x, bomb_y + offset_y);
 
+					// context.translate(bomb_x + offset_x, bomb_y + offset_y);
+					// Rotate the bomb around
 					context.rotate(Math.PI);
-					rock.draw();
+					rock1.draw();
 					context.restore();
 					catapultArm.draw();
 					context.restore();
 					catapultBody.draw();
-					
-					
+
 				},
 				drawCatapult2: function (angle) {
-					
-					
-					
+
 					context.save();
+					// Set origin
 					context.translate(.70 * canvas_width + 38,345);
+					// Convert to radians
 					var rads = angle * (Math.PI / 180);
+
 					context.rotate(rads);
-					
+					context.save();
+
+					rock2.draw();
+					context.restore();
 					catapultArm2.draw();
 					context.restore();
 					catapultBody2.draw();
-					
+
 				},
 				initialize: function() {
 					// var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
