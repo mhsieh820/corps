@@ -2,7 +2,7 @@
 			var canvas_height = window.innerHeight;
 			var blueTeamShield = new Sprite('shield.svg', -10, 10, 20, 30);
 			var redTeamShield = new Sprite('redShield.svg', 30, 10, 20, 30);
-			var messageBox = new Sprite('commentBox.svg', 0, 0, 80, 40);
+			var messageBox = new Sprite('commentBox.svg', 0, 0, 160, 80);
 			var bgSprite = new Sprite('bg.svg', 0, 0, canvas_width, canvas_height);
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
@@ -185,11 +185,13 @@
 
 			Player.prototype.draw = function() {
 				//console.log("DRAW MOTHERUFKCER");
-				if (this.gLoaded)
+				if (this.gLoaded) {
+					context.drawImage(messageBox.img, (-messageBox.width/2)+(this.width/2), -messageBox.height-10, messageBox.width, messageBox.height);
 					context.drawImage(this.img, 0, 0, this.width, this.height);
 					this.shield.draw();
-					context.drawImage(messageBox.img, 0, -50, messageBox.width, messageBox.height);
-					context.fillText(this.message, 0, -50);
+					context.fillStyle = 'white';
+					context.fillText(this.message, -10, -messageBox.height/2);
+				}
 
 			};
 
