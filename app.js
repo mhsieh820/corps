@@ -351,6 +351,7 @@ app.post('/email', function (req, res) {
   		
 	game.sendScore();
 	
+/*
 
 	fs.readFile('template/email.html', function (err, html) {
     if (err) {
@@ -371,5 +372,6 @@ app.post('/email', function (req, res) {
     }
     
     });  	
+*/
 
 });
