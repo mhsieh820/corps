@@ -2,7 +2,7 @@ var express = require('express');
 var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame', {api: 'smtp', port: 465});
 var routes = require('./routes');
 var http = require('http');
-var fs = require('fs');
+//var fs = require('fs');
 var path = require('path');
 
 var app = express();
@@ -25,7 +25,7 @@ app.use(express.bodyParser());
 
 //app.use(express.logger('dev'));
 
-app.use(express.json());
+//app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
@@ -362,8 +362,7 @@ app.post('/email', function (req, res) {
   		
 	game.sendScore();
 	
-	/*
-fs.readFile('template/email.html', function (err, html) {
+	fs.readFile('template/email.html', function (err, html) {
     if (err) {
         throw err; 
     }
@@ -374,22 +373,15 @@ fs.readFile('template/email.html', function (err, html) {
 		from: 'game@corpsgame.com',
 		fromname: 'coRPS Game',
 		subject: 'Welcome to coRPS!',
-		html: html,
-		generateTextFromHTML: true,
-		headers: {
-			'MIME-Version' : "1.0",
-			'Content-Type': "text/html; charset=ISO-8859-1"
-
-		}
+		html: html
 	}, function(success, message) {
 		console.log(success);
 	});	
     
     });  	
-*/
 
 	
-	//}
+	
 
 });
 

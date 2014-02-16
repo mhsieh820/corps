@@ -1,7 +1,7 @@
 		    $j = jQuery.noConflict();
 
 			var socket = io.connect('/');
-			var gameDuration = 10;
+			var gameDuration = 600;
 
 			var canvas_width = window.innerWidth;
 			var canvas_height = window.innerHeight;
