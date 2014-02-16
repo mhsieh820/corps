@@ -372,7 +372,7 @@ app.post('/email', function (req, res) {
     	
     	sendgrid.send({
 		to: from,
-		replyTo: 'corpsgame.bymail.in'
+		replyTo: 'email@corpsgame.bymail.in',
 		from: 'game@corpsgame.com',
 		fromname: 'coRPS Game',
 		subject: 'Welcome to coRPS!',
