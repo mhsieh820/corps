@@ -4,6 +4,7 @@
 			var redTeamShield = new Sprite('redShield.svg', 30, 10, 20, 30);
 			var messageBox = new Sprite('commentBox.svg', 0, 0, 160, 80);
 			var bgSprite = new Sprite('bg.svg', 0, 0, canvas_width, canvas_height);
+			var feet = new Sprite('feet.svg', 0, 0, 20, 30);
 
 			var catapultBody = new Sprite('image/catapultBody.svg', .20 * canvas_width, 300, 124, 72);
 			var catapultArm = new Sprite('image/catapultArm.svg', 0 , 0, 168, 23);
@@ -45,7 +46,7 @@
 
 			// Add new players into game
 		    socket.on('sendPlayer', function (response) {
-			    // uid, timestamp, message, team
+			    // uid, timestamp, message, team, choice[r,p,s]
 			    console.log(response);
 
 			    // Check for existing player
@@ -243,6 +244,7 @@
 				this.id = id;
 				this.gLoaded = false;
 				this.img = new Image();
+				this.choice = "";
 				this.width = 40;
 				this.height = 40;
 				this.vx = (Math.random() -.5) * MAX_SPEED;
@@ -280,6 +282,7 @@
 			Player.prototype.draw = function() {
 				//console.log("DRAW MOTHERUFKCER");
 				if (this.gLoaded) {
+					// Draw text messages
 					if (this.message.timer > 0) {
 						// context.drawImage(messageBox.img, (-messageBox.width/2)+(this.width/2), -messageBox.height-10, messageBox.width, messageBox.height);
 						context.save();
@@ -295,7 +298,12 @@
 						context.fillText(truncatedMessage, (-(textWidth+20)/2)+(this.width/2)+10, 0);
 						context.restore();
 					}
+					// Draw feet
+					context.drawImage(feet.img, 0, this.height);
+
+					// Draw gravatar
 					context.drawImage(this.img, 0, 0, this.width, this.height);
+					// Draw player shield
 					this.shield.draw();
 
 				}
