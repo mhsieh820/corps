@@ -190,7 +190,16 @@
 					// context.translate(bomb_x + offset_x, bomb_y + offset_y);
 					// Rotate the bomb around
 					context.rotate(Math.PI);
-					rock1.draw();
+					if (game.team1 == "r") {
+						rock1.draw();
+					} else if (game.team1 == "p") {
+						paper1.draw();
+					} else if (game.team1 == "s") {
+						scissor1.draw();
+					} else {
+						bomb.draw();
+					}
+
 					context.restore();
 					catapultArm.draw();
 					context.restore();
@@ -208,7 +217,15 @@
 					context.rotate(rads);
 					context.save();
 
-					rock2.draw();
+					if (game.team2 == "r") {
+						rock2.draw();
+					} else if (game.team2 == "p") {
+						paper2.draw();
+					} else if (game.team2 == "s") {
+						scissor2.draw();
+					} else {
+						bomb2.draw();
+					}					
 					context.restore();
 					catapultArm2.draw();
 					context.restore();
