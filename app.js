@@ -45,6 +45,7 @@ var game = new Game();;
 var gameEngine;
 var gameDuration = 180;
 var gameOn = true;
+var teamChoice = null;
 
 
 
@@ -181,6 +182,7 @@ function Game() {
 			
 			//team = 0,1 choice = r,p,s
 			var response = { teamA: teamA, teamB: teamB };
+			teamChoice=response;
 			io.sockets.in(gameEngine).emit('updateScore', response);
 			
 		}
@@ -209,30 +211,31 @@ function Game() {
 		io.sockets.in(gameEngine).emit('sendPlayer',  response);
 	
 	};
+
+	Game.prototype.findWinner=function(){
+		if(teamChoice != null){
+			var a=teamChoice.teamA;
+			var b=teamChoice.teamB;
+			if(a == 'r' && b =='s')
+				return 'Team A';
+			else if(a == 's' && b == 'p')
+				return 'Team A';
+			else if(a == 'p' && b == 'r')
+				return 'Team A';
+			else if(b == 'r' && a =='s')
+				return 'Team B';
+			else if(b == 's' && a == 'p')
+				return 'Team B';
+			else if(b == 'p' && a == 'r')
+				return 'Team B';
+			else
+				return 'TIE!';
+
+
+		}
+	}
 	
-	// Game.prototype.countDown = function (counter, callback) {
- //            var timer = setInterval(countItDown,1000);
 
- //            // Decrement the displayed timer value on each 'tick'
- //            function countItDown(){
- //                counter -= 1;
- //                console.log('time:'+startTime+'\n');
- //                io.sockets.socket(gameEngine).emit('timeUpdate',counter);
-
- //                if( counter <= 0 ){
- //                    console.log('Countdown Finished.');
-
-
- //                    // Stop the timer and do the callback.
- //                    clearInterval(timer);
- //                    callback();
- //                    return;
- //                }
- //            }
-
- //    };
-			
-	
 	//utility for timer	
 	
 	
@@ -282,28 +285,7 @@ function Game() {
 
 
   	
-  //	console.log('emited ready');  	
-  
-  	//New Email Recieved
 
-  	
-
-    
-     //SOCKETS THAT COME IN FROM EMAIL
-   
-    
-    //email
-    
-    //game ends
-    
-    
-
-	//game engine
-	
-	
-	
-	
-  
 
 
 //Client Connects
@@ -321,7 +303,7 @@ io.sockets.on('connection', function (socket) {
     });
 
 	socket.on('gameEnd', function(){
-		console.log('This shit is done yo!');
+		var winner=game.findWinner();
 		gameOn = false;
 	});
   	
@@ -362,34 +344,6 @@ app.post('/email', function (req, res) {
   		
 	game.sendScore();
 	
-	/*
-fs.readFile('template/email.html', function (err, html) {
-    if (err) {
-        throw err; 
-    }
-    	
-    	sendgrid.send({
-		to: from,
-		replyTo: 'email@corpsgame.bymail.in',
-		from: 'game@corpsgame.com',
-		fromname: 'coRPS Game',
-		subject: 'Welcome to coRPS!',
-		html: html,
-		generateTextFromHTML: true,
-		headers: {
-			'MIME-Version' : "1.0",
-			'Content-Type': "text/html; charset=ISO-8859-1"
-
-		}
-	}, function(success, message) {
-		console.log(success);
-	});	
-    
-    });  	
-*/
-
-	
-	//}
 
 });
 
