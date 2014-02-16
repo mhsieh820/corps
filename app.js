@@ -235,7 +235,7 @@ function Game() {
 				winner='TIE!';
 
 			console.log("Sending winner: " + winner);
-			socket.emit('sendWinner',winner);
+			io.sockets.socket(gameEngine).emit('sendWinner',winner);
 			return winner;
 		}
 	};
