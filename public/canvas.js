@@ -4,11 +4,19 @@
 			var redTeamShield = new Sprite('redShield.svg', 30, 10, 20, 30);
 			var messageBox = new Sprite('commentBox.svg', 0, 0, 160, 80);
 			var bgSprite = new Sprite('bg.svg', 0, 0, canvas_width, canvas_height);
+			var catapultBody = new Sprite('catapultBody.svg', 200, 200, 124, 72);
+			var catapultArm = new Sprite('catapultArm.svg', 0 , 0, 168, 23);
+			var catapultBody2 = new Sprite('catapultBody_rev.svg', 900, 200, 124, 72);
+			var catapultArm2 = new Sprite('catapultArm_rev.svg', 0 , 0, 168, 23);
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
 			var RED_TEAM = 1;
 			var MESSAGE_DECAY = 90;
-
+			var startAngle = 260;
+			var endAngle = 180;
+			var finalAngle = 280;
+			var rateOfChange = 1000 / 3000;
+			var rateOfFinalChange = 2000 / 3000;
 			/**
 			 * Clamps a number. Based on Zevan's idea: http://actionsnippet.com/?p=475
 			 * params: val, min, max
@@ -78,12 +86,21 @@
 				time: 0,
 				fps: 30,
 				players: [],
+				currentAngle: startAngle,
 				start: function() {
 
 					// Start code here
 					this.interval = setInterval(function() {
 						game.update();
 						game.draw();
+						if (game.currentAngle > endAngle)
+						{
+							//console.log(game.time);
+							angle = game.currentAngle - rateOfChange;
+							game.currentAngle = angle;
+						}
+						
+						game.drawCatapult(angle);
 					}, 1000/this.fps);
 				},
 				stop: function() {
@@ -114,6 +131,19 @@
 					// }
 
 
+				},
+				drawCatapult: function (angle) {
+					
+					
+					
+					context.save();
+					context.translate(283,250);
+					var rads = angle * (Math.PI / 180);
+					context.rotate(rads);
+					catapultArm.draw();
+					context.restore();
+					catapultBody.draw();
+					
 				},
 				initialize: function() {
 					// var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
@@ -155,7 +185,7 @@
 				this.height = 40;
 				this.vx = (Math.random() -.5) * MAX_SPEED;
 				this.vy = (Math.random() -.5) * MAX_SPEED;
-				this.message = {};
+				this.message = "";
 				var randomX = -1;
 				if (team <= BLUE_TEAM) {
 					this.shield = blueTeamShield;

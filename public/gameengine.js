@@ -2,21 +2,31 @@ $j = jQuery.noConflict();
 
 var socket = io.connect('/');
 var users = {};
+var gameDuration=60;
 
 window.onload = function() {
  	
-    //alert('GAME ENGINE');
+
     //console.log('Game engine')
     socket.on('ready', function (data) {
-    	socket.emit('gameEngine', "send")
-		alert(data);
+    	var ready=confirm("Ready to play?");
+		if (ready==true)
+		  {
+		  socket.emit('startGame',true);
+		  countDown(gameDuration,function(){ socket.emit('gameEnd',{}) });
+		  }
+		else
+		  {
+		  alert("LOSER!");
+		  }
+    	
     });
     
 }	
     
     socket.on('emailReceived', function (data){
     	console.log('email received');
-    	//alert(data);
+    	
     });   
     
     socket.on('gameTime', function (value) {
@@ -31,6 +41,31 @@ window.onload = function() {
 	   //teamA, teamB 
     });
     
+
+	// socket.on('gameStart',function(gameDuration){
+	// 	//countDown(gameDuration,function(){ socket.emit('gameEnd',{}) });		
+	// });
+
+
+	var countDown = function (counter, callback) {
+            var timer = setInterval(countItDown,1000);
+
+            // Decrement the displayed timer value on each 'tick'
+            function countItDown(){
+                counter -= 1;
+                console.log('time:'+counter+'\n');
+         
+                if( counter <= 0 ){
+                    console.log('Countdown Finished.');
+                    // Stop the timer and do the callback.
+                    clearInterval(timer);
+                    callback();
+                    return;
+                }
+            }
+
+    };
+
     // socket.on('sendPlayer', function (response) {
 	   //  // uid, timestamp, message, team
 	   //  console.log(response);
