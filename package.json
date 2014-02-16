@@ -5,7 +5,8 @@
 		"sendgrid" : "*",
 		"express" : "*",
 		"socket.io" : "*",
-		"jade" : "*"
+		"jade" : "*",
+		"multiparty": "3.2.2"
 	}
 
 }
