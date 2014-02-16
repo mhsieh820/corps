@@ -1,7 +1,7 @@
 		    $j = jQuery.noConflict();
 
 			var socket = io.connect('/');
-			var gameDuration = 600;
+			var gameDuration = 5;
 
 			var canvas_width = window.innerWidth;
 			var canvas_height = window.innerHeight;
@@ -486,7 +486,7 @@
 		    	$j("#start").on("click", function () {
 					$j("#splash").fadeOut();
 					socket.emit('gameStart',true);
-					countDown(gameDuration,function(){ socket.emit('gameEnd', true) });
+					countDown(gameDuration,function(){ socket.emit('gameEnd', true); console.log("Game Ended"); });
 					game.running = true;
 				});
 				
