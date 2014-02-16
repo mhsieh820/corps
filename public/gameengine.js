@@ -2,7 +2,7 @@ $j = jQuery.noConflict();
 
 var socket = io.connect('/');
 var users = {};
-var gameDuration= 600;
+var gameDuration = 600;
 
 window.onload = function() {
  	
@@ -22,7 +22,18 @@ window.onload = function() {
     	
     });
     
-}	
+}
+
+$j(document).ready(function () {
+	
+	$j("#start").on("click", function () {
+	
+		$j("#splash").fadeOut();
+		socket.emit('startGame',true);
+		countDown(gameDuration,function(){ socket.emit('gameEnd',{}) });
+	});
+	
+});
     
     socket.on('emailReceived', function (data){
     	console.log('email received');
