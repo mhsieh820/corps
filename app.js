@@ -97,7 +97,7 @@ io.sockets.on('connection', function (socket) {
   //	console.log('emited ready');  	
   
   	//New Email Recieved
-/*
+
   	socket.on('newEmail',function (data) {
   		console.log('email received'+data.email+data.msg+data.choice);
   		
@@ -108,7 +108,7 @@ io.sockets.on('connection', function (socket) {
 	  	game.sendScore();
 	  	
     });
-*/
+
     
      //SOCKETS THAT COME IN FROM EMAIL
    
