@@ -1,5 +1,5 @@
 var express = require('express');
-var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame', {api: 'smtp', port: 465});
+var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame');
 var routes = require('./routes');
 var http = require('http');
 var fs = require('fs');
