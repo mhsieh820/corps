@@ -137,7 +137,7 @@
 					// Draw everything on screen
 			        context.clearRect(0, 0, myCanvas.width, myCanvas.height);
 			        bgSprite.draw();
-
+					
 					
 					if (game.currentAngle > endAngle && game.running)
 					{
@@ -146,7 +146,7 @@
 						game.currentAngle = angle;
 					}
 					
-					game.drawCatapult(angle);
+					game.drawCatapult(game.currentAngle);
 					
 					if (game.currentAngle2 < endAngle2 && game.running)
 					{
@@ -154,7 +154,7 @@
 						angle2 = game.currentAngle2 + rateOfChange;
 						game.currentAngle2 = angle2;
 					}
-					game.drawCatapult2(angle2);
+					game.drawCatapult2(game.currentAngle2);
 
 					//timer
 					
