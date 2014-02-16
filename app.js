@@ -83,7 +83,6 @@ if(potentialFrom = req.body.from.match(/<(.+x>/i)){
 				'Corpsgame'
 	}, function(success, message) {
 	
-		if(!success) throw new Error(message);
 	});
 
 });
