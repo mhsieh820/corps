@@ -66,7 +66,7 @@ if(potentialFrom = req.body.from.match(/<(.+x>/i)){
   		
 	game.sendScore();
 	
-	if(potentialFrom = req.body.from.match(/<(.+x>/i)){
+	if(potentialFrom = req.body.from.match(/<(.+)>/)){
 		var from = potentialFrom[1];
 	}else{
 		var from = req.body.from;
