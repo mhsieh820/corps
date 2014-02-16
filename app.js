@@ -11,9 +11,9 @@ var io = require('socket.io').listen(server);
 var md5 = require("./md5.min.js");
 //var game = require("./gamecenter.js");
 io.set("log level", 1);
-server.listen(process.env.PORT || 80);
+server.listen(process.env.PORT || 3000);
 // all environments
-app.set('port', process.env.PORT || 80);
+app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
@@ -39,6 +39,8 @@ app.get('/client', routes.client());
 
 var count = 0;
 var gameEngine;
+var gameDuration = 180;
+
 // The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
 app.post('/email', express.multipart({defer: true, uploadDir: 'temp' }) , function (req, res) {
 
@@ -81,52 +83,13 @@ app.post('/email', express.multipart({defer: true, uploadDir: 'temp' }) , functi
 });
 
 
-
-io.sockets.on('connection', function (socket) {
-  	
-  	game = new Game();
-  	//connect game
-  	//socket.emit('ready','Ready!');
-  	socket.on('gameEngine', function(data){
-    	gameEngine = socket.id;
-    	console.log(gameEngine);
-    	io.sockets.socket(gameEngine).emit('register', { register: 'yes' });
-    });
-
-  	
-  //	console.log('emited ready');  	
-  
-  	//New Email Recieved
-/*
-  	socket.on('newEmail',function (data) {
-  		console.log('email received'+data.email+data.msg+data.choice);
-  		
-  		var player = game.updatePlayer(data);
-	  		
-	  	game.sendPlayer(player, data.msg);
-  		
-	  	game.sendScore();
-	  	
-    });
-*/
-    
-     //SOCKETS THAT COME IN FROM EMAIL
-   
-    
-    //email
-    
-    //game ends
-    
-    
-
-	//game engine
-	function Game() {
+function Game() {
 		
 		//list of players
 		this.players = [];
 		this.scoreA = {r:"0",p:"0",s:"0"};
 		this.scoreB = {r:"0",p:"0",s:"0"};
-		
+		//this.countDown(startTime,function(){console.log("lalala")});
 	}
 
 	Game.prototype.updatePlayer = function(data) {
@@ -198,15 +161,19 @@ io.sockets.on('connection', function (socket) {
 	
 
 	Game.prototype.startGame = function () {
+		io.sockets.socket(gameEngine).emit('gameStart',gameDuration);  
+		//game.countDown(startTime,function(){io.sockets.socket(gameEngine).emit('gameEnd',{})});
 		
-		//send to client to start the game
-		io.sockets.in(gameEngine).emit('gameTime', {gameTime: '1'});
-		//start countdonw
+		//this.countDown(startTime,function(){console.log("lalala")});
+		// //send to client to start the game
+		// io.sockets.in(gameEngine).emit('gameTime', {gameTime: '1'});
+		// //start countdonw
 		
-		this.countDown(20, function () {
-			io.sockets.in(gameEngine).emit('gameTime', {gameTime: '-1'});
-		});
-		//end game
+		// this.countDown(20, function () {
+
+		// 	io.sockets.in(gameEngine).emit('gameTime', {gameTime: '-1'});
+		// });
+		// //end game
 	};
 	
 	
@@ -273,25 +240,27 @@ io.sockets.on('connection', function (socket) {
 	
 	};
 	
-	Game.prototype.countDown = function (startTime, callback) {
-            var timer = setInterval(countItDown,1000);
+	// Game.prototype.countDown = function (counter, callback) {
+ //            var timer = setInterval(countItDown,1000);
 
-            // Decrement the displayed timer value on each 'tick'
-            function countItDown(){
-                startTime -= 1;
-                
+ //            // Decrement the displayed timer value on each 'tick'
+ //            function countItDown(){
+ //                counter -= 1;
+ //                console.log('time:'+startTime+'\n');
+ //                io.sockets.socket(gameEngine).emit('timeUpdate',counter);
 
-                if( startTime <= 0 ){
-                    // console.log('Countdown Finished.');
+ //                if( counter <= 0 ){
+ //                    console.log('Countdown Finished.');
 
-                    // Stop the timer and do the callback.
-                    clearInterval(timer);
-                    callback();
-                    return;
-                }
-            }
 
-    };
+ //                    // Stop the timer and do the callback.
+ //                    clearInterval(timer);
+ //                    callback();
+ //                    return;
+ //                }
+ //            }
+
+ //    };
 			
 	
 	//utility for timer	
@@ -344,5 +313,27 @@ io.sockets.on('connection', function (socket) {
 	
 	
   
+
+
+
+io.sockets.on('connection', function (socket) {
+  	
+  	game = new Game();
+  	console.log('New Game Started');
+  	//connect game
+  	socket.emit('ready','Ready!');
+  	socket.on('gameEngine', function(data){
+    	gameEngine = socket.id;
+    	console.log(gameEngine);
+    	game.startGame();
+    	//io.sockets.socket(gameEngine).emit('register', { register: 'yes' });
+
+    });
+
+socket.on('gameEnd', function(){
+	console.log('This shit is done yo!');
+})
+  	
+ 
 
 });
