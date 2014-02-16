@@ -153,7 +153,7 @@
 				this.height = 40;
 				this.vx = (Math.random() -.5) * MAX_SPEED;
 				this.vy = (Math.random() -.5) * MAX_SPEED;
-				this.message = "";
+				this.message = {};
 				var randomX = -1;
 				if (team <= BLUE_TEAM) {
 					this.shield = blueTeamShield;
@@ -180,12 +180,15 @@
 			Player.prototype.sendMessage = function(message) {
 				console.log("User: " + this.id + " Message: " + message);
 				context.font = "30px Arial";
-				this.message = message;
+				this.message = {"message": message, "timer": MESSAGE_DECAY};
 			}
 
 			Player.prototype.draw = function() {
 				//console.log("DRAW MOTHERUFKCER");
 				if (this.gLoaded) {
+					context.save();
+					context.globalAlpha = 0.2;
+					context.restore();
 					context.drawImage(messageBox.img, (-messageBox.width/2)+(this.width/2), -messageBox.height-10, messageBox.width, messageBox.height);
 					context.drawImage(this.img, 0, 0, this.width, this.height);
 					this.shield.draw();
