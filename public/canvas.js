@@ -102,6 +102,12 @@
 
 		    });
 
+		    socket.on('sendWinner' , function (data) {
+		    	// Team A, Team B, TIE!
+		    	console.log("Winner: " + data);
+		    	game.finishAnimation(data);
+		    });
+
 		    socket.on('updateScore', function(response) {
 			    // $j("#scoreA").text(response.teamA);
 			    // $j("#scoreB").text(response.teamB);
@@ -140,6 +146,30 @@
 					this.players.forEach(function (player) {
 						player.update();
 					})
+				},
+				finishAnimation: function(winner) {
+					// Team A, Team B, TIE!
+					if (winner == "Team A") {
+						this.players.forEach(function(player) {
+							//console.log(player);
+							player.vx = 15;
+						});
+					} else if (winner == "Team B") {
+						this.players.forEach(function(player) {
+							//console.log(player);
+							player.vx = -15;
+						});
+					} else {
+						this.players.forEach(function(player) {
+							//console.log(player);
+							if (player.team == 0) {
+								player.vx = -15;
+							} else {
+								player.vx = 15;
+							}
+						});
+					}
+
 				},
 				draw: function() {
 					// Draw everything on screen
@@ -265,11 +295,36 @@
 					
 				},
 				initialize: function() {
-					// var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
-					// var randomEmail = Math.floor(Math.random() * emails.length);
-					// var randomTeam = Math.floor(Math.random() * 2);
-	    // 			var me = new Player(md5(emails[randomEmail]), randomTeam);
-					// this.players.push(me);
+					for (var i = 0; i < 2; i++) {
+						var randomVote = Math.floor(Math.random() * 3 + 1);
+						var vote = "";
+						switch (randomVote) {
+							case 1:
+							vote = "r";
+							break;
+							case 2:
+							vote = "p";
+							break;
+							case 3:
+							vote = "s";
+							break;
+						}
+
+						if (i == 1) {
+							game.team1 = vote;
+						} else {
+							game.team2 = vote;
+						}
+					}
+
+
+					for (var i = 0; i < 200; i++){
+						var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
+						var randomEmail = Math.floor(Math.random() * emails.length);
+						var randomTeam = Math.floor(Math.random() * 2);
+		    			var me = new Player(md5(emails[randomEmail]), randomTeam);
+						this.players.push(me);
+					}
 					this.start();
 				}
 			};
@@ -426,6 +481,8 @@
 
 	    	// Run this when the page loads
 		    $j(document).ready(function () {
+		    	$j('body').append(myCanvas);
+		    	game.initialize();
 		    	$j("#start").on("click", function () {
 					$j("#splash").fadeOut();
 					socket.emit('gameStart',true);
@@ -433,13 +490,8 @@
 					game.running = true;
 				});
 				
-		    	$j('body').append(myCanvas);
-		    	game.initialize();
+
 		    });
-
-
-
-
 
 	var countDown = function (counter, callback) {
             var timer = setInterval(countItDown,1000);
