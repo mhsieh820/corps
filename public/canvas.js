@@ -1,7 +1,7 @@
 		    $j = jQuery.noConflict();
 
 			var socket = io.connect('/');
-			var gameDuration = 20;
+			var gameDuration = 25;
 
 			var canvas_width = window.innerWidth;
 			var canvas_height = window.innerHeight;
@@ -42,7 +42,7 @@
 			var finalAngle2 = 100;
 			
 			var rateOfChange = 80/(30*gameDuration);
-			var rateOfFinalChange = 2000 / 3000;
+			var rateOfFinalChange = 10;
 			
 			var percentage = 1;
 			/**
@@ -170,7 +170,7 @@
 							}
 						});
 					}
-
+					game.running = false;
 					window.cheer.play();
 
 				},
@@ -182,25 +182,53 @@
 			        context.translate(myCanvas.width/2-(348/2), 50);
 		        	logo.draw();
 			        context.restore();
-					
-					
+					context.save();
 					if (game.currentAngle > endAngle && game.running)
 					{
 						//console.log(game.time);
 						angle = game.currentAngle - rateOfChange;
 						game.currentAngle = angle;
+					} else if (game.currentAngle < startAngle && game.ended) {
+						angle = game.currentAngle + rateOfFinalChange;
+						game.currentAngle = angle;
+					} else if (game.currentAngle >= startAngle && game.ended) {
+						var speed = 10;
+						bomb.yoffset -= speed;
+						bomb.xoffset += speed*.1;
+						rock1.yoffset -= speed;
+						rock1.xoffset += speed*.1;
+						paper1.yoffset -= speed;
+						paper1.xoffset += speed*.1;
+						scissor1.yoffset -= speed;
+						scissor1.xoffset += speed*.1;
+
 					}
-					
 					game.drawCatapult(game.currentAngle);
+					context.restore();
+					context.save();
 					
 					if (game.currentAngle2 < endAngle2 && game.running)
 					{
 						//console.log(game.time);
 						angle2 = game.currentAngle2 + rateOfChange;
 						game.currentAngle2 = angle2;
+					} else if (game.currentAngle2 > startAngle2 && game.ended) {
+						angle = game.currentAngle2 - rateOfFinalChange;
+						game.currentAngle2 = angle;
+					} else if (game.currentAngle >= startAngle2 && game.ended) {
+						var speed = 10;
+						bomb2.yoffset -= speed;
+						bomb2.xoffset -= speed*.1;
+						rock2.yoffset -= speed;
+						rock2.xoffset -= speed*.1;
+						paper2.yoffset -= speed;
+						paper2.xoffset -= speed*.1;
+						scissor2.yoffset -= speed;
+						scissor2.xoffset -= speed*.1;
+
 					}
 					game.drawCatapult2(game.currentAngle2);
-
+					context.restore();
 					//timer
 					
 					if (game.running)
@@ -304,27 +332,27 @@
 					context.restore();
 				},
 				initialize: function() {
-					for (var i = 0; i < 2; i++) {
-						var randomVote = Math.floor(Math.random() * 3 + 1);
-						var vote = "";
-						switch (randomVote) {
-							case 1:
-							vote = "r";
-							break;
-							case 2:
-							vote = "p";
-							break;
-							case 3:
-							vote = "s";
-							break;
-						}
+					// for (var i = 0; i < 2; i++) {
+					// 	var randomVote = Math.floor(Math.random() * 3 + 1);
+					// 	var vote = "";
+					// 	switch (randomVote) {
+					// 		case 1:
+					// 		vote = "r";
+					// 		break;
+					// 		case 2:
+					// 		vote = "p";
+					// 		break;
+					// 		case 3:
+					// 		vote = "s";
+					// 		break;
+					// 	}
 
-						if (i == 1) {
-							game.team1 = vote;
-						} else {
-							game.team2 = vote;
-						}
-					}
+					// 	if (i == 1) {
+					// 		game.team1 = vote;
+					// 	} else {
+					// 		game.team2 = vote;
+					// 	}
+					// }
 
 
 					// for (var i = 0; i < 200; i++){
