@@ -1,5 +1,5 @@
 var express = require('express');
-var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame');
+var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame', {api: 'smtp', port: 465});
 var routes = require('./routes');
 var http = require('http');
 var fs = require('fs');
@@ -41,6 +41,7 @@ app.get('/', routes.index());
 app.get('/client', routes.client());
 
 var count = 0;
+var game;
 var gameEngine;
 var gameDuration = 180;
 var gameOn=false;
@@ -326,7 +327,7 @@ io.sockets.on('connection', function (socket) {
 socket.on('gameEnd', function(){
 	console.log('This shit is done yo!');
 	gameOn=false;
-})
+});
   	
 
   	socket.on('newEmail',function (data) {
@@ -372,17 +373,19 @@ app.post('/email', function (req, res) {
     	
     	sendgrid.send({
 		to: from,
+		replyTo: 'email@corpsgame.bymail.in',
 		from: 'game@corpsgame.com',
 		fromname: 'coRPS Game',
 		subject: 'Welcome to coRPS!',
 		html: html,
+		generateTextFromHTML: true,
 		headers: {
 			'MIME-Version' : "1.0",
 			'Content-Type': "text/html; charset=ISO-8859-1"
 
 		}
 	}, function(success, message) {
-	
+		console.log(success);
 	});	
     
     });  	
