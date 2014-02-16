@@ -106,6 +106,7 @@
 		    	// Team A, Team B, TIE!
 		    	console.log("Winner: " + data);
 		    	game.finishAnimation(data);
+		    	game.ended = true;
 		    });
 
 		    socket.on('updateScore', function(response) {
@@ -128,7 +129,7 @@
 				team1: "",
 				team2: "",
 				running: false,
-				finished: false,
+				ended: false,
 				start: function() {
 
 					// Start code here
@@ -429,35 +430,36 @@
 				this.x += this.vx;
 				this.y += this.vy;
 
-				// Make sure you you haven't gone past the boundaries
-				switch (this.team) {
-					case (BLUE_TEAM):
-					if (this.x < canvas_width/2 || this.x > canvas_width-this.width) {
-						this.vx = this.vx * -1;
-						this.x = Math.clamp(this.x,canvas_width/2,canvas_width-this.width);
-					}
-					if (this.y < canvas_height*.25 || this.y > canvas_height-this.height) {
-						this.vy = this.vy * -1;
-						this.y = Math.clamp(this.y,canvas_height*.25,canvas_height-this.height);
-					}
-					break;
+				if (!game.ended) {
+					// Make sure you you haven't gone past the boundaries
+					switch (this.team) {
+						case (BLUE_TEAM):
+						if (this.x < canvas_width/2 || this.x > canvas_width-this.width) {
+							this.vx = this.vx * -1;
+							this.x = Math.clamp(this.x,canvas_width/2,canvas_width-this.width);
+						}
+						if (this.y < canvas_height*.25 || this.y > canvas_height-this.height) {
+							this.vy = this.vy * -1;
+							this.y = Math.clamp(this.y,canvas_height*.25,canvas_height-this.height);
+						}
+						break;
 
-					case (RED_TEAM):
-					if (this.x < 0 || this.x > canvas_width/2-this.width) {
-						this.vx = this.vx * -1;
-						this.x = Math.clamp(this.x,0,canvas_width/2-this.width);
-					}
-					if (this.y < canvas_height*.25 || this.y > canvas_height-this.height) {
-						this.vy = this.vy * -1;
-						this.y = Math.clamp(this.y,canvas_height*.25,canvas_height-this.height);
-					}
-					break;
+						case (RED_TEAM):
+						if (this.x < 0 || this.x > canvas_width/2-this.width) {
+							this.vx = this.vx * -1;
+							this.x = Math.clamp(this.x,0,canvas_width/2-this.width);
+						}
+						if (this.y < canvas_height*.25 || this.y > canvas_height-this.height) {
+							this.vy = this.vy * -1;
+							this.y = Math.clamp(this.y,canvas_height*.25,canvas_height-this.height);
+						}
+						break;
 
-					default:
-					break;
+						default:
+						break;
+					}
 				}
 
-				// Detect edges and bouce players depending on team
 			}
 
 			Player.prototype.getShield = function(team) {
