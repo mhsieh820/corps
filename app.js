@@ -183,7 +183,9 @@ function Game() {
 			//team = 0,1 choice = r,p,s
 			var response = { teamA: teamA, teamB: teamB };
 			teamChoice=response;
-			io.sockets.in(gameEngine).emit('updateScore', response);
+			//io.sockets.in(gameEngine).emit('updateScore', response);
+			io.sockets.socket(gameEngine).emit('updateScore',response);
+	
 			
 		}
 	
@@ -207,8 +209,8 @@ function Game() {
 		//player is the Player object
 		var response = { uid: player.uid, timestamp: timestamp, message: message, team: player.team, choice: player.choice};
 		
-		console.log(response);	
-		io.sockets.in(gameEngine).emit('sendPlayer',  response);
+
+		io.sockets.socket(gameEngine).emit('sendPlayer',response);
 	
 	};
 
