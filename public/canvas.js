@@ -2,6 +2,7 @@
 			var canvas_height = window.innerHeight;
 			var blueTeamShield = new Sprite('shield.svg', -10, 10, 20, 30);
 			var redTeamShield = new Sprite('redShield.svg', 30, 10, 20, 30);
+			var messageBox = new Sprite('commentBox.svg', 0, 0, 80, 40);
 			var bgSprite = new Sprite('bg.svg', 0, 0, canvas_width, canvas_height);
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
@@ -38,23 +39,37 @@
 			    }
 
 			  	// Nobody found. Let's add them!
-
 		    	if (newPlayer) {
 		    		game.players.push(new Player(response.uid, response.team));
 		    		//console.log("Added new player: " + response.uid);
 		    	}
 
-			    if (response.team == 0)
-			    {
-				    //teamA
-				    $j("#teamA").append("<div>" + response.uid + " " + response.timestamp + " Message:  " + response.message + "</div>");
-			    }
-			    else
-			    {
-				    //teamB
-				    $j("#teamB").append("<div>" + response.uid + " " + response.timestamp + " Message:  " + response.message + "</div>");
-			    }
 		    });
+
+
+	        socket.on('ready', function (data) {
+		    	socket.emit('gameEngine', "send")
+				alert(data);
+		    });
+
+		    socket.on('emailReceived', function (data){
+		    	console.log('email received');
+		    	//alert(data);
+		    });
+
+		    socket.on('gameTime', function (value) {
+
+			    // 1 (start), -1 (end)
+
+
+		    });
+
+		    socket.on('updateScore', function(response) {
+			    $j("#scoreA").text(response.teamA);
+			    $j("#scoreB").text(response.teamB);
+			   //teamA, teamB
+		    });
+
 
 			var game = {
 				interval: 0,
@@ -87,7 +102,6 @@
 						context.save();
 						context.translate(player.x, player.y);
 						player.draw();
-						player.shield.draw();
 						context.restore();
 					});
 					// console.log(this.players);
@@ -139,6 +153,7 @@
 				this.height = 40;
 				this.vx = (Math.random() -.5) * MAX_SPEED;
 				this.vy = (Math.random() -.5) * MAX_SPEED;
+				this.message = "";
 				var randomX = -1;
 				if (team <= BLUE_TEAM) {
 					this.shield = blueTeamShield;
@@ -165,13 +180,17 @@
 			Player.prototype.sendMessage = function(message) {
 				console.log("User: " + this.id + " Message: " + message);
 				context.font = "30px Arial";
-				context.fillText(message, 0, 0)
+				this.message = message;
 			}
 
 			Player.prototype.draw = function() {
 				//console.log("DRAW MOTHERUFKCER");
 				if (this.gLoaded)
 					context.drawImage(this.img, 0, 0, this.width, this.height);
+					this.shield.draw();
+					context.drawImage(messageBox.img, 0, -50, messageBox.width, messageBox.height);
+					context.fillText(this.message, 0, -50);
+
 			};
 
 			Player.prototype.update = function() {
@@ -226,7 +245,7 @@
 			myCanvas.height = canvas_height;
 
 			// Add canvas to DOM
-			
+
 		    var context = myCanvas.getContext('2d');
 
 	    	// Run this when the page loads
