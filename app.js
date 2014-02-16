@@ -220,22 +220,22 @@ function Game() {
 			var b=teamChoice.teamB;
 			var winner;
 			if(a == 'r' && b =='s')
-				winner='Team A';
+				winner='Team Red Wins!';
 			else if(a == 's' && b == 'p')
-				winner='Team A';
+				winner='Team Red Wins!';
 			else if(a == 'p' && b == 'r')
-				winner='Team A';
+				winner='Team Red Wins!';
 			else if(b == 'r' && a =='s')
-				winner='Team B';
+				winner='Team Blue Wins!';
 			else if(b == 's' && a == 'p')
-				winner='Team B';
+				winner='Team Blue Wins!';
 			else if(b == 'p' && a == 'r')
-				winner='Team B';
+				winner='Team Blue Wins!';
 			else
-				winner='TIE!';
+				winner='Tie Game!';
 
-			console.log("Sending winner: " + winner);
-			io.sockets.socket(gameEngine).emit('sendWinner',winner);
+			response = { winner :  winner, statA : this.scoreA, statB : this.scoreB };
+			io.sockets.socket(gameEngine).emit('sendWinner', response );
 			return winner;
 		}
 	};
@@ -309,7 +309,7 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('gameEnd', function(){
 		console.log("Game end message received.");
-		var winner=game.findWinner();
+		var winner = game.findWinner();
 		gameOn = false;
 	});
   	
