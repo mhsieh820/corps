@@ -42,11 +42,12 @@ app.get('/client', routes.client());
 var count = 0;
 var gameEngine;
 var gameDuration = 180;
+var gameOn=false;
 
 // The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
 app.post('/email', function (req, res) {
 
-
+	while(gameOn){
 	
 	if(potentialFrom = req.body.from.match(/<(.+)>/)){
 		var from = potentialFrom[1];
@@ -79,6 +80,7 @@ app.post('/email', function (req, res) {
 	}, function(success, message) {
 	
 	});
+	}
 
 });
 
@@ -162,19 +164,23 @@ function Game() {
 	
 
 	Game.prototype.startGame = function () {
-		io.sockets.socket(gameEngine).emit('gameStart',gameDuration);  
-		//game.countDown(startTime,function(){io.sockets.socket(gameEngine).emit('gameEnd',{})});
-		
-		//this.countDown(startTime,function(){console.log("lalala")});
-		// //send to client to start the game
-		// io.sockets.in(gameEngine).emit('gameTime', {gameTime: '1'});
-		// //start countdonw
-		
-		// this.countDown(20, function () {
+		gameOn=true;
+		// Start recieving emails
 
-		// 	io.sockets.in(gameEngine).emit('gameTime', {gameTime: '-1'});
-		// });
-		// //end game
+
+		// io.sockets.socket(gameEngine).emit('gameStart',gameDuration);  
+		// //game.countDown(startTime,function(){io.sockets.socket(gameEngine).emit('gameEnd',{})});
+		
+		// //this.countDown(startTime,function(){console.log("lalala")});
+		// // //send to client to start the game
+		// // io.sockets.in(gameEngine).emit('gameTime', {gameTime: '1'});
+		// // //start countdonw
+		
+		// // this.countDown(20, function () {
+
+		// // 	io.sockets.in(gameEngine).emit('gameTime', {gameTime: '-1'});
+		// // });
+		// // //end game
 	};
 	
 	
@@ -337,23 +343,27 @@ function Game() {
   
 
 
-
+//Client Connects
 io.sockets.on('connection', function (socket) {
   	
-  	game = new Game();
-  	console.log('New Game Started');
-  	//connect game
+  	//Server is ready to pair with it's device
   	socket.emit('ready','Ready!');
-  	socket.on('gameEngine', function(data){
+
+  	//Server waits for client input
+  	socket.on('startGame', function(data){
+  		game = new Game();
+  		console.log('New Game Started');
     	gameEngine = socket.id;
     	console.log(gameEngine);
-    	game.startGame();
+    	game.startGame(data);
+
     	//io.sockets.socket(gameEngine).emit('register', { register: 'yes' });
 
     });
 
 socket.on('gameEnd', function(){
 	console.log('This shit is done yo!');
+	gameOn=false;
 })
   	
 

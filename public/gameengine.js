@@ -2,13 +2,24 @@ $j = jQuery.noConflict();
 
 var socket = io.connect('/');
 var users = {};
+var gameDuration=60;
 
 window.onload = function() {
  	
 
     //console.log('Game engine')
     socket.on('ready', function (data) {
-    	socket.emit('gameEngine', {})
+    	var ready=confirm("Ready to play?");
+		if (ready==true)
+		  {
+		  socket.emit('startGame',true);
+		  countDown(gameDuration,function(){ socket.emit('gameEnd',{}) });
+		  }
+		else
+		  {
+		  alert("LOSER!");
+		  }
+    	
     });
     
 }	
@@ -31,12 +42,12 @@ window.onload = function() {
     });
     
 
-	socket.on('gameStart',function(gameDuration){
-		countDown(gameDuration,function(){ socket.emit('gameEnd',{}) });		
-	});
+	// socket.on('gameStart',function(gameDuration){
+	// 	//countDown(gameDuration,function(){ socket.emit('gameEnd',{}) });		
+	// });
 
 
-	function countDown(counter, callback) {
+	var countDown = function (counter, callback) {
             var timer = setInterval(countItDown,1000);
 
             // Decrement the displayed timer value on each 'tick'
