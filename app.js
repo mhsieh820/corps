@@ -41,6 +41,7 @@ app.get('/', routes.index());
 app.get('/client', routes.client());
 
 var count = 0;
+var game;
 var gameEngine;
 var gameDuration = 180;
 var gameOn=false;
@@ -326,7 +327,7 @@ io.sockets.on('connection', function (socket) {
 socket.on('gameEnd', function(){
 	console.log('This shit is done yo!');
 	gameOn=false;
-})
+});
   	
 
   	socket.on('newEmail',function (data) {
