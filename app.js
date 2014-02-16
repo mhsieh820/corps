@@ -42,20 +42,16 @@ var gameEngine;
 // The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
 app.post('/email', function (req, res) {
 
-	// SendGrid gives us a lot of information, however, here we only need the person's email (to make sure they don't vote twice) and the subject which serves as their vote.
-	// Note: Make sure you configure your app to use Express' Body Parse by doing: app.use(express.bodyParser());
-	console.log("GOT EMAIL");
-	console.log(req.body.from);
-	/*
-if(potentialFrom = req.body.from.match(/<(.+x>/i)){
+
+	
+	if(potentialFrom = req.body.from.match(/<(.+)>/)){
 		var from = potentialFrom[1];
 	}else{
 		var from = req.body.from;
 	}
-*/
-	
+		
 	var data = {
-		'email' : req.body.from,
+		'email' : from,
 		'choice': req.body.subject,
 		'msg' : req.body.text
 	};
@@ -66,12 +62,7 @@ if(potentialFrom = req.body.from.match(/<(.+x>/i)){
   		
 	game.sendScore();
 	
-	if(potentialFrom = req.body.from.match(/<(.+)>/)){
-		var from = potentialFrom[1];
-	}else{
-		var from = req.body.from;
-	}
-	// Finally, I want to thank everyone who voted, luckily SendGrid also will send email for me. I just need to tell it what to send.
+
 	sendgrid.send({
 		to: from,
 		from: 'game@corpsgame.com',
