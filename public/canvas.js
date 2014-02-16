@@ -41,7 +41,7 @@
 			var endAngle2 = -10;
 			var finalAngle2 = 100;
 			
-			var rateOfChange = 1000 / 3000;
+			var rateOfChange = 80/(30*gameDuration);
 			var rateOfFinalChange = 2000 / 3000;
 			
 			var percentage = 1;
@@ -204,6 +204,7 @@
 					if (game.running)
 					{
 						//change percentage
+						percentage = game.time/gameDuration;
 					}
 					
 					game.drawTimer(percentage);
@@ -293,7 +294,12 @@
 
 				},
 				drawTimer: function(percentage) {
-					
+					context.save();
+					context.translate(myCanvas.width/2, myCanvas.height*0.9);
+					context.fillStyle = '#ba002c';
+					context.fillRect(0,0, myCanvas.width/2*percentage, 30);
+					context.fillRect(0,0, -myCanvas.width/2*percentage, 30);
+					context.restore();
 				},
 				initialize: function() {
 					for (var i = 0; i < 2; i++) {
@@ -501,6 +507,7 @@
             // Decrement the displayed timer value on each 'tick'
             function countItDown(){
                 counter -= 1;
+                game.time = counter;
                 console.log('time:'+counter+'\n');
          
                 if( counter <= 0 ){
