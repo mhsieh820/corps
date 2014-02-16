@@ -12,13 +12,15 @@
 			var catapultBody2 = new Sprite('image/catapultBody_rev.svg', .70 * canvas_width, 300, 124, 72);
 			var catapultArm2 = new Sprite('image/catapultArm_rev.svg', 0 , 0, 168, 23);
 			
+			var bomb = new Sprite('image/bomb.svg', -200, -190, 142, 179);
 			var rock1 = new Sprite('image/bomb-rock.svg', -200, -190, 142, 179);
-			var paper1 = new Sprite('image/bomb-rock.svg', -200, -190, 142, 179);
-			var scissor1 = new Sprite('image/bomb-rock.svg', -200, -190, 142, 179);
+			var paper1 = new Sprite('image/bomb-paper.svg', -200, -190, 142, 179);
+			var scissor1 = new Sprite('image/bomb-scissors.svg', -200, -190, 142, 179);
 			
+			var bomb2 = new Sprite('image/bomb.svg', 55, -168, 142, 179);
 			var rock2 = new Sprite('image/bomb-rock.svg', 55, -168, 142, 179);
-			var paper2 = new Sprite('image/bomb-rock.svg', 0, 0, 142, 179);
-			var scissor2 = new Sprite('image/bomb-rock.svg', 0, 0, 142, 179);
+			var paper2 = new Sprite('image/bomb-paper.svg', 55, -168, 142, 179);
+			var scissor2 = new Sprite('image/bomb-scissors.svg', 55, -168, 142, 179);
 			
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
@@ -105,6 +107,8 @@
 				players: [],
 				currentAngle: startAngle,
 				currentAngle2: startAngle2,
+				team1: "",
+				team2: "",
 				start: function() {
 
 					// Start code here
@@ -302,7 +306,7 @@
 						context.restore();
 					}
 					// Draw feet
-					context.drawImage(feet.img, 0, this.height);
+					context.drawImage(feet.img, 7, this.height);
 
 					// Draw gravatar
 					context.drawImage(this.img, 0, 0, this.width, this.height);
