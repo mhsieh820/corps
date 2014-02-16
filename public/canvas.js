@@ -111,22 +111,7 @@
 					this.interval = setInterval(function() {
 						game.update();
 						game.draw();
-						if (game.currentAngle > endAngle)
-						{
-							//console.log(game.time);
-							angle = game.currentAngle - rateOfChange;
-							game.currentAngle = angle;
-						}
-						
-						game.drawCatapult(angle);
-						
-						if (game.currentAngle2 < endAngle2)
-						{
-							//console.log(game.time);
-							angle2 = game.currentAngle2 + rateOfChange;
-							game.currentAngle2 = angle2;
-						}
-						game.drawCatapult2(angle2);
+
 					}, 1000/this.fps);
 				},
 				stop: function() {
@@ -142,6 +127,24 @@
 					// Draw everything on screen
 			        context.clearRect(0, 0, myCanvas.width, myCanvas.height);
 			        bgSprite.draw();
+
+					if (game.currentAngle > endAngle)
+					{
+						//console.log(game.time);
+						angle = game.currentAngle - rateOfChange;
+						game.currentAngle = angle;
+					}
+					
+					game.drawCatapult(angle);
+					
+					if (game.currentAngle2 < endAngle2)
+					{
+						//console.log(game.time);
+						angle2 = game.currentAngle2 + rateOfChange;
+						game.currentAngle2 = angle2;
+					}
+					game.drawCatapult2(angle2);
+
 					this.players.forEach(function(player) {
 						//console.log(player);
 						context.save();
