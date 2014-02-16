@@ -19,9 +19,9 @@ app.set('view engine', 'jade');
 
 app.use(express.favicon());
 //app.use(express.bodyParser());
-app.use(express.bodyParser());
+
 //app.use(express.logger('dev'));
-app.use (express.multipart());
+app.use(express.multipart());
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
