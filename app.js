@@ -231,12 +231,12 @@ function Game() {
 				winner='Team B';
 			else
 				winner='TIE!';
+
+			console.log("Sending winner: " + winner);
 			socket.emit('sendWinner',winner);
 			return winner;
-
-
 		}
-	}
+	};
 	
 
 	//utility for timer	
@@ -306,6 +306,7 @@ io.sockets.on('connection', function (socket) {
     });
 
 	socket.on('gameEnd', function(){
+		console.log("Game end message received.");
 		var winner=game.findWinner();
 		gameOn = false;
 	});
