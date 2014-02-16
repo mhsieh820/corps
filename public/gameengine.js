@@ -5,7 +5,7 @@ var users = {};
 
 window.onload = function() {
  	
-    //alert('GAME ENGINE');
+
     //console.log('Game engine')
     socket.on('ready', function (data) {
     	socket.emit('gameEngine', {})
@@ -15,7 +15,7 @@ window.onload = function() {
     
     socket.on('emailReceived', function (data){
     	console.log('email received');
-    	//alert(data);
+    	
     });   
     
     socket.on('gameTime', function (value) {

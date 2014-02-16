@@ -12,7 +12,7 @@ var md5 = require("./md5.min.js");
 //var game = require("./gamecenter.js");
 
 
-server.listen(process.env.PORT || 80);
+server.listen(process.env.PORT || 3000);
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -340,7 +340,7 @@ function Game() {
 
 io.sockets.on('connection', function (socket) {
   	
-  	game = new Gae();
+  	game = new Game();
   	console.log('New Game Started');
   	//connect game
   	socket.emit('ready','Ready!');
