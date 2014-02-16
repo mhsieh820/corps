@@ -4,11 +4,16 @@
 			var redTeamShield = new Sprite('redShield.svg', 30, 10, 20, 30);
 			var messageBox = new Sprite('commentBox.svg', 0, 0, 160, 80);
 			var bgSprite = new Sprite('bg.svg', 0, 0, canvas_width, canvas_height);
-			var catapultBody = new Sprite('catapultBody.svg', 200, 200, 124, 72);
-			var catapultArm = new Sprite('catapultArm.svg', 0 , 0, 168, 23);
+			var catapultBody = new Sprite('image/catapultBody.svg', .20 * canvas_width, 300, 124, 72);
+			var catapultArm = new Sprite('image/catapultArm.svg', 0 , 0, 168, 23);
 			
-			var catapultBody2 = new Sprite('catapultBody_rev.svg', 900, 200, 124, 72);
-			var catapultArm2 = new Sprite('catapultArm_rev.svg', 0 , 0, 168, 23);
+			var catapultBody2 = new Sprite('image/catapultBody_rev.svg', .70 * canvas_width, 300, 124, 72);
+			var catapultArm2 = new Sprite('image/catapultArm_rev.svg', 0 , 0, 168, 23);
+			
+			var rock = new Sprite('image/bomb-rock.svg', 0, 0, 142, 179);
+			var paper = new Sprite('image/bomb-rock.svg', 0, 0, 142, 179);
+			var scissor = new Sprite('image/bomb-rock.svg', 0, 0, 142, 179);
+			
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
 			var RED_TEAM = 1;
@@ -16,6 +21,11 @@
 			var startAngle = 260;
 			var endAngle = 180;
 			var finalAngle = 280;
+			
+			var startAngle2 = -90;
+			var endAngle2 = -10;
+			var finalAngle2 = 100;
+			
 			var rateOfChange = 1000 / 3000;
 			var rateOfFinalChange = 2000 / 3000;
 			/**
@@ -86,6 +96,7 @@
 				fps: 30,
 				players: [],
 				currentAngle: startAngle,
+				currentAngle2: startAngle2,
 				start: function() {
 
 					// Start code here
@@ -100,6 +111,14 @@
 						}
 						
 						game.drawCatapult(angle);
+						
+						if (game.currentAngle2 < endAngle2)
+						{
+							//console.log(game.time);
+							angle2 = game.currentAngle2 + rateOfChange;
+							game.currentAngle2 = angle2;
+						}
+						game.drawCatapult2(angle2);
 					}, 1000/this.fps);
 				},
 				stop: function() {
@@ -132,16 +151,48 @@
 
 				},
 				drawCatapult: function (angle) {
+				
+					context.save();
+					context.translate(.20 * canvas_width + 80,350);
+					var rads = angle * (Math.PI / 180);
+					context.rotate(rads);
+					context.save();
+					context.translate(.20 * canvas_width + 80,350);
+					
+					
+					
+					
+					offset_x = -168;
+					offset_y = -160;
+					
+					bomb_x = 0;
+					bomb_y = 0;
+					//bomb_x = Math.cos((angle) * (Math.PI / 180)) * 128;
+					//bomb_y = Math.sin((angle) * (Math.PI / 180)) * 128;
+				
+					context.translate(bomb_x + offset_x, bomb_y + offset_y);
+
+					context.rotate(Math.PI);
+					rock.draw();
+					context.restore();
+					catapultArm.draw();
+					context.restore();
+					catapultBody.draw();
+					
+					
+				},
+				drawCatapult2: function (angle) {
 					
 					
 					
 					context.save();
-					context.translate(283,250);
+					context.translate(.70 * canvas_width + 38,345);
 					var rads = angle * (Math.PI / 180);
 					context.rotate(rads);
-					catapultArm.draw();
+					
+					catapultArm2.draw();
 					context.restore();
-					catapultBody.draw();
+					catapultBody2.draw();
 					
 				},
 				initialize: function() {
