@@ -2,7 +2,7 @@ var express = require('express');
 var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame');
 var routes = require('./routes');
 var http = require('http');
-var fs = = require('fs');
+var fs = require('fs');
 var path = require('path');
 
 var app = express();
