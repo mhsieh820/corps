@@ -205,7 +205,7 @@ function Game() {
 		var timestamp = new Date().getTime();	
 		
 		//player is the Player object
-		var response = { uid: player.uid, timestamp: timestamp, message: message, team: player.team };
+		var response = { uid: player.uid, timestamp: timestamp, message: message, team: player.team, choice: player.choice};
 		
 		console.log(response);	
 		io.sockets.in(gameEngine).emit('sendPlayer',  response);
