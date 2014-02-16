@@ -1,7 +1,7 @@
 		    $j = jQuery.noConflict();
 
 			var socket = io.connect('/');
-			var gameDuration = 5;
+			var gameDuration = 20;
 
 			var canvas_width = window.innerWidth;
 			var canvas_height = window.innerHeight;
@@ -318,13 +318,13 @@
 					}
 
 
-					for (var i = 0; i < 200; i++){
-						var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
-						var randomEmail = Math.floor(Math.random() * emails.length);
-						var randomTeam = Math.floor(Math.random() * 2);
-		    			var me = new Player(md5(emails[randomEmail]), randomTeam);
-						this.players.push(me);
-					}
+					// for (var i = 0; i < 200; i++){
+					// 	var emails = ["andre@andrele.com", "pavels@yorku.ca", "ramya.r2cm@gmail.com", "mhsieh820@gmail.com"];
+					// 	var randomEmail = Math.floor(Math.random() * emails.length);
+					// 	var randomTeam = Math.floor(Math.random() * 2);
+		   //  			var me = new Player(md5(emails[randomEmail]), randomTeam);
+					// 	this.players.push(me);
+					// }
 					this.start();
 				}
 			};
