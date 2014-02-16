@@ -80,8 +80,8 @@ app.post('/email', function (req, res) {
 		subject: 'Response',
 		html: html,
 		headers: {
-			MIME-Version : "1.0",
-			Content-Type: "text/html; charset=ISO-8859-1"
+			'MIME-Version' : "1.0",
+			'Content-Type': "text/html; charset=ISO-8859-1"
 
 		}
 	}, function(success, message) {
