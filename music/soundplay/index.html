@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Soundplay</title>
+</head>
+
+<body>
+<button id="theme" onclick="playmusic();">Theme</button>
+
+<script>
+function loadSound (src) {
+    var sound = document.createElement("audio");
+    if ("src" in sound) {
+        sound.autoPlay = false;
+    }
+    else {
+        sound = document.createElement("bgsound");
+        sound.volume = -10000;
+        sound.play = function () {
+            this.src = src;
+            this.volume = 0;
+        }
+    }
+    sound.src = src;
+    document.body.appendChild(sound);
+    return sound;
+ }
+ 
+ 
+ var theme = loadSound("theme music.mp3");  //  preload
+ 
+ function playmusic() {
+	 if(theme.paused){
+		theme.play(); 
+		console.log("Wasn't playing");
+	 }
+	 else {
+		console.log("Was playing");
+		 theme.pause();
+	 }
+ }
+ 
+
+</script>
+</body>
+</html>
