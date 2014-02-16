@@ -4,6 +4,7 @@
 			var redTeamShield = new Sprite('redShield.svg', 30, 10, 20, 30);
 			var messageBox = new Sprite('commentBox.svg', 0, 0, 160, 80);
 			var bgSprite = new Sprite('bg.svg', 0, 0, canvas_width, canvas_height);
+
 			var catapultBody = new Sprite('image/catapultBody.svg', .20 * canvas_width, 300, 124, 72);
 			var catapultArm = new Sprite('image/catapultArm.svg', 0 , 0, 168, 23);
 			
@@ -17,7 +18,7 @@
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
 			var RED_TEAM = 1;
-			var MESSAGE_DECAY = 1000;
+			var MESSAGE_DECAY = 90;
 			var startAngle = 260;
 			var endAngle = 180;
 			var finalAngle = 280;
@@ -59,7 +60,9 @@
 
 			  	// Nobody found. Let's add them!
 		    	if (newPlayer) {
-		    		game.players.push(new Player(response.uid, response.team));
+		    		var newPlayer = new Player(response.uid, response.team);
+		    		game.players.push(newPlayer);
+		    		newPlayer.sendMessage(response.message);
 		    		//console.log("Added new player: " + response.uid);
 		    	}
 
@@ -261,23 +264,39 @@
 
 			Player.prototype.sendMessage = function(message) {
 				console.log("User: " + this.id + " Message: " + message);
-				context.font = "30px Arial";
-				this.message = message;
+				context.font = "16px Arial";
+				this.message = {"message": message, "timer": MESSAGE_DECAY};
 			}
 
 			Player.prototype.draw = function() {
 				//console.log("DRAW MOTHERUFKCER");
 				if (this.gLoaded) {
-					context.drawImage(messageBox.img, (-messageBox.width/2)+(this.width/2), -messageBox.height-10, messageBox.width, messageBox.height);
+					if (this.message.timer > 0) {
+						// context.drawImage(messageBox.img, (-messageBox.width/2)+(this.width/2), -messageBox.height-10, messageBox.width, messageBox.height);
+						context.save();
+						var truncatedMessage = this.message.message.substring(0,21);
+						var textWidth =  context.measureText(truncatedMessage).width;
+						context.translate(0,-15);
+						context.fillStyle = 'black';
+						context.save();
+						context.globalAlpha = 0.4;
+						context.fillRect((-(textWidth+20)/2)+(this.width/2), -20, textWidth+20, 30);
+						context.restore();
+						context.fillStyle = 'white';
+						context.fillText(truncatedMessage, (-(textWidth+20)/2)+(this.width/2)+10, 0);
+						context.restore();
+					}
 					context.drawImage(this.img, 0, 0, this.width, this.height);
 					this.shield.draw();
-					context.fillStyle = 'white';
-					context.fillText(this.message, -10, -messageBox.height/2);
+
 				}
 
 			};
 
 			Player.prototype.update = function() {
+				if (this.message.timer > 0)
+					this.message.timer = this.message.timer -1;
+
 				// Move players by velocity
 				this.x += this.vx;
 				this.y += this.vy;
