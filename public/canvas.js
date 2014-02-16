@@ -26,6 +26,8 @@
 			var rock2 = new Sprite('image/bomb-rock.svg', 55, -168, 142, 179);
 			var paper2 = new Sprite('image/bomb-paper.svg', 55, -168, 142, 179);
 			var scissor2 = new Sprite('image/bomb-scissors.svg', 55, -168, 142, 179);
+
+			var logo = new Sprite('image/logo.png', 0, 0, 348, 206);
 			
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
@@ -142,6 +144,10 @@
 					// Draw everything on screen
 			        context.clearRect(0, 0, myCanvas.width, myCanvas.height);
 			        bgSprite.draw();
+			        context.save();
+			        context.translate(myCanvas.width/2-(348/2), 50);
+		        	logo.draw();
+			        context.restore();
 					
 					
 					if (game.currentAngle > endAngle && game.running)
