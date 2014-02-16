@@ -2,6 +2,7 @@ var express = require('express');
 var sendgrid  = require('sendgrid')('rrmallya', 'corpsgame');
 var routes = require('./routes');
 var http = require('http');
+var fs = = require('fs');
 var path = require('path');
 
 var app = express();
@@ -67,19 +68,29 @@ app.post('/email', function (req, res) {
   		
 	game.sendScore();
 	
-
-	sendgrid.send({
+	fs.readFile('template/email.html', function (err, html) {
+    if (err) {
+        throw err; 
+    }
+    	
+    	sendgrid.send({
 		to: from,
 		from: 'game@corpsgame.com',
 		fromname: 'CMU Team',
 		subject: 'Response',
-		text:	'Hi!\n' +
-				'Yay\n' +
-				'--\n' +
-				'Corpsgame'
+		html: html,
+		headers: {
+			MIME-Version : "1.0",
+			Content-Type: "text/html; charset=ISO-8859-1"
+
+		}
 	}, function(success, message) {
 	
-	});
+	});	
+    
+    });  	
+
+	
 	}
 
 });
