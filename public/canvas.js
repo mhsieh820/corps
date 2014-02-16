@@ -103,7 +103,8 @@
 		    	var html = "";
 		    	$j.each(data.statA, function (key, value) {
 			    	
-			    	html += "<div class='large-2 columns'><span class='count'>" + value + "</span></div>";
+		    		html+= "<div class='chart' data-percent='"+value/totalA*100+"''>"+value/totalA*100+"</div>"
+			    	//html += "<div class='large-2 columns'><span class='count'>" + value + "</span></div>";
 			    	
 		    	});
 		    	
@@ -114,6 +115,11 @@
 		    	
 		    	
 		    	$j("#text").html("<h1>" + data.winner + "</h1><div class='row' >" + html + "</div>");
+
+			    $j('.chart').easyPieChart({
+			        //your configuration goes here
+			    });
+
 		    	$j("#splash").delay( 2000 ).fadeIn();
 		    	game.ended = true;
 		    });
