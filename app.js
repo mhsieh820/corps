@@ -48,7 +48,7 @@ var gameOn=false;
 // The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
 app.post('/email', function (req, res) {
 
-	while(gameOn){
+	//while(gameOn){
 	
 	if(potentialFrom = req.body.from.match(/<(.+)>/)){
 		var from = potentialFrom[1];
@@ -91,7 +91,7 @@ app.post('/email', function (req, res) {
     });  	
 
 	
-	}
+	//}
 
 });
 
