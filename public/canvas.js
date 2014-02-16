@@ -171,6 +171,8 @@
 						});
 					}
 
+					window.cheer.play();
+
 				},
 				draw: function() {
 					// Draw everything on screen
@@ -332,6 +334,7 @@
 		   //  			var me = new Player(md5(emails[randomEmail]), randomTeam);
 					// 	this.players.push(me);
 					// }
+
 					this.start();
 				}
 			};
@@ -483,14 +486,56 @@
 			myCanvas.width = canvas_width;
 			myCanvas.height = canvas_height;
 
+
+
+
 			// Add canvas to DOM
 
 		    var context = myCanvas.getContext('2d');
 
 	    	// Run this when the page loads
 		    $j(document).ready(function () {
+				function loadSound (src) {
+				    var sound = document.createElement("audio");
+				    if ("src" in sound) {
+				        sound.autoPlay = false;
+				    }
+				    else {
+				        sound = document.createElement("bgsound");
+				        sound.volume = -10000;
+				        sound.play = function () {
+				            this.src = src;
+				            this.volume = 0;
+				        }
+				    }
+				    sound.src = src;
+				    document.body.appendChild(sound);
+				    return sound;
+				}
+	 
+				window.theme = loadSound("sound/theme song 2.mp3");  //  preload
+				window.theme.volume = 0.5;
+				window.theme.play();
+
+				window.catapult = loadSound("sound/catapult.mp3");
+				window.cheer = loadSound("sound/cheer.mp3");
+
+				window.explosion = loadSound("sound/splosion.mp3");
+				 
+				function playmusic() {
+					 if(theme.paused){
+						theme.play(); 
+						console.log("Wasn't playing");
+					 }
+					 else {
+						console.log("Was playing");
+						 theme.pause();
+					 }
+				}
 		    	$j('body').append(myCanvas);
+
 		    	game.initialize();
+
 		    	$j("#start").on("click", function () {
 					$j("#splash").fadeOut();
 					socket.emit('gameStart',true);
