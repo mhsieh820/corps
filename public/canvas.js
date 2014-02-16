@@ -7,7 +7,7 @@
 			var MAX_SPEED = 1;
 			var BLUE_TEAM = 0;
 			var RED_TEAM = 1;
-			var MESSAGE_DECAY = 1000;
+			var MESSAGE_DECAY = 90;
 
 			/**
 			 * Clamps a number. Based on Zevan's idea: http://actionsnippet.com/?p=475
@@ -40,7 +40,9 @@
 
 			  	// Nobody found. Let's add them!
 		    	if (newPlayer) {
-		    		game.players.push(new Player(response.uid, response.team));
+		    		var newPlayer = new Player(response.uid, response.team);
+		    		game.players.push(newPlayer);
+		    		newPlayer.sendMessage(response.message);
 		    		//console.log("Added new player: " + response.uid);
 		    	}
 
@@ -179,26 +181,39 @@
 
 			Player.prototype.sendMessage = function(message) {
 				console.log("User: " + this.id + " Message: " + message);
-				context.font = "30px Arial";
+				context.font = "16px Arial";
 				this.message = {"message": message, "timer": MESSAGE_DECAY};
 			}
 
 			Player.prototype.draw = function() {
 				//console.log("DRAW MOTHERUFKCER");
 				if (this.gLoaded) {
-					context.save();
-					context.globalAlpha = 0.2;
-					context.restore();
-					context.drawImage(messageBox.img, (-messageBox.width/2)+(this.width/2), -messageBox.height-10, messageBox.width, messageBox.height);
+					if (this.message.timer > 0) {
+						// context.drawImage(messageBox.img, (-messageBox.width/2)+(this.width/2), -messageBox.height-10, messageBox.width, messageBox.height);
+						context.save();
+						var truncatedMessage = this.message.message.substring(0,21);
+						var textWidth =  context.measureText(truncatedMessage).width;
+						context.translate(0,-15);
+						context.fillStyle = 'black';
+						context.save();
+						context.globalAlpha = 0.4;
+						context.fillRect((-(textWidth+20)/2)+(this.width/2), -20, textWidth+20, 30);
+						context.restore();
+						context.fillStyle = 'white';
+						context.fillText(truncatedMessage, (-(textWidth+20)/2)+(this.width/2)+10, 0);
+						context.restore();
+					}
 					context.drawImage(this.img, 0, 0, this.width, this.height);
 					this.shield.draw();
-					context.fillStyle = 'white';
-					context.fillText(this.message, -10, -messageBox.height/2);
+
 				}
 
 			};
 
 			Player.prototype.update = function() {
+				if (this.message.timer > 0)
+					this.message.timer = this.message.timer -1;
+
 				// Move players by velocity
 				this.x += this.vx;
 				this.y += this.vy;
