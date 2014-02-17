@@ -48,6 +48,57 @@ var gameOn = true;
 var teamChoice = null;
 
 
+// The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
+app.post('/email', function (req, res) {
+
+	//while(ga){
+	
+	if(potentialFrom = req.body.from.match(/<(.+)>/)){
+		var from = potentialFrom[1];
+	}else{
+		var from = req.body.from;
+	}
+		
+	var data = {
+		'email' : from,
+		'choice': req.body.subject,
+		'msg' : req.body.text
+	};
+	
+	var player = game.updatePlayer(data);
+	  		
+	game.sendPlayer(player, data.msg);
+  		
+	game.sendScore();
+	
+	if (player.isNew == true) {
+
+
+	fs.readFile('template/email.html', function (err, html) {
+    if (err) {
+        console.log(err) 
+    }
+    else{
+    	
+    	sendgrid.send({
+		to: from,
+		replyTo: 'email@corpsgame.bymail.in',
+		from: 'game@corpsgame.com',
+		fromname: 'coRPS Game',
+		subject: 'Welcome to coRPS!',
+		html: html
+	}, function(success, message) {
+		console.log(success);
+	});	
+    }
+    
+    });  	
+	
+	}
+
+});
+
+
 
 
 function Game() {
@@ -68,7 +119,7 @@ function Game() {
 			if( hash == this.players[i].uid){
 				
 				var oldChoice = this.players[i].choice;
-				
+				this.players[i].isNew = false; //so no more emails
 				var newChoice = this.players[i].updateChoice(data.choice);
 				if(newChoice != null){
 					this.updateScore(oldChoice, newChoice, this.players[i].team);
@@ -256,6 +307,7 @@ function Game() {
 		this.choice = choice;
 		this.team = "";
 		this.uid = hash;
+		this.isNew = true;
 	};
 	
 	
@@ -334,50 +386,3 @@ io.sockets.on('connection', function (socket) {
 
 });
 
-// The webhook will POST emails to whatever endpoint we tell it, so here we setup the endpoint /email
-app.post('/email', function (req, res) {
-
-	//while(ga){
-	
-	if(potentialFrom = req.body.from.match(/<(.+)>/)){
-		var from = potentialFrom[1];
-	}else{
-		var from = req.body.from;
-	}
-		
-	var data = {
-		'email' : from,
-		'choice': req.body.subject,
-		'msg' : req.body.text
-	};
-	
-	var player = game.updatePlayer(data);
-	  		
-	game.sendPlayer(player, data.msg);
-  		
-	game.sendScore();
-	
-/*
-
-	fs.readFile('template/email.html', function (err, html) {
-    if (err) {
-        console.log(err) 
-    }
-    else{
-    	
-    	sendgrid.send({
-		to: from,
-		replyTo: 'email@corpsgame.bymail.in',
-		from: 'game@corpsgame.com',
-		fromname: 'coRPS Game',
-		subject: 'Welcome to coRPS!',
-		html: html
-	}, function(success, message) {
-		console.log(success);
-	});	
-    }
-    
-    });  	
-*/
-
-});
